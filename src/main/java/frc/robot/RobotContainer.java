@@ -4,14 +4,9 @@
 
 package frc.robot;
 
-import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -24,6 +19,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  //private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
   /*
   private final AHRS m_navx = m_drivetrainSubsystem.getNavx();
 
@@ -45,10 +41,11 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> -modifyAxis(m_controller.getRawAxis(1)) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(m_controller.getRawAxis(0)) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(m_controller.getRawAxis(2)) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> -modifyAxis(m_controller.getRawAxis(1)) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND / 2,
+            () -> -modifyAxis(m_controller.getRawAxis(0)) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND / 2,
+            () -> -modifyAxis(m_controller.getRawAxis(4)) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND / 2
     ));
+    //m_climberSubsystem.setDefaultCommand(new DefaultClimberCommand(m_climberSubsystem, m_controller.getRawAxis(2) - m_controller.getRawAxis(3)));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -117,11 +114,11 @@ public class RobotContainer {
     } else {
       return 0.0;
     }
-  }
+  } 
 
   private static double modifyAxis(double value) {
     // Deadband
-    value = deadband(value, 0.05);
+    value = deadband(value, 0.15);
 
     // Square the axis
     value = Math.copySign(value * value, value);
