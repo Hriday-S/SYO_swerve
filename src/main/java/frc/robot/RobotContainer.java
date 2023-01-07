@@ -4,10 +4,18 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.Button;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.TranslationDriveCommand;
+import frc.robot.commands.RotationDriveCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 /**
@@ -19,13 +27,6 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
-  /*
-  private final AHRS m_navx = m_drivetrainSubsystem.getNavx();
-
-  private double currentX = 0;
-  private double currentY = 0;
-  private double currentAngle = 0;
-  */
 
   private final Joystick m_controller = new Joystick(0);
   private static double m_powerCap = 0.6;
@@ -48,7 +49,22 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-    //configureNavx();
+  }
+
+  public void reset() {
+    m_drivetrainSubsystem.zeroGyroscope();
+    m_drivetrainSubsystem.updateAngle();
+    m_drivetrainSubsystem.updateDriveEncoders();
+  }
+
+  public List<Command> autonomousCommands() {
+    return new ArrayList<Command>(Arrays.asList(
+        // Example autonomous commands
+        new TranslationDriveCommand(m_drivetrainSubsystem, 1, 1, 0.4),
+        new RotationDriveCommand(m_drivetrainSubsystem, 90, 0.3),
+        new TranslationDriveCommand(m_drivetrainSubsystem, -1, -1, 0.4),
+        new RotationDriveCommand(m_drivetrainSubsystem, -90, 0.3)
+    ));
   }
 
   /**
@@ -58,56 +74,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //A button resets Gyro
-    Button m_resetGyro = new Button(() -> m_controller.getRawButton(1));
-    m_resetGyro.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
-
+    // Holding down both triggers activates turbo speed
     Button m_turbo = new Button(() -> (m_controller.getRawAxis(2) > 0.5 && m_controller.getRawAxis(3) > 0.5));
     m_turbo.whenPressed(() -> setTurbo(1.0));
     m_turbo.whenReleased(() -> setTurbo(0.6));
   }
-
-  /*
-  private void configureNavx() {
-    m_drivetrainSubsystem.calibrateNavx();
-  }
-
-  public void translate(double x, double y, double power) {
-    currentX = m_navx.getDisplacementX();
-    currentY = m_navx.getDisplacementY();
-    while (!(Math.abs(x - m_navx.getDisplacementX() - currentX) < 0.1 || Math.abs(y - m_navx.getDisplacementY() - currentY) < 0.1)) {
-      double relativeX = m_navx.getDisplacementX() - currentX;
-      double relativeY = m_navx.getDisplacementY() - currentY;
-      double distance = Math.sqrt(Math.pow(x - relativeX, 2) + Math.pow(y - relativeY, 2));
-      driveCommand(-modifyAxis((x - relativeX)/distance) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND * power, -modifyAxis((y - relativeY)/distance) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND * power, 0).schedule();
-    }
-    driveCommand(0, 0, 0).schedule();
-  }
-
-  public void rotate(double angle, double power) {
-    currentAngle = m_navx.getAngle();
-    while (!(Math.abs(angle - m_navx.getAngle() - currentAngle) < 5)) {
-      double relativeAngle = m_navx.getAngle() - currentAngle;
-      driveCommand(0, 0, -modifyAxis(Math.copySign(0.5, angle - relativeAngle)) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * power).schedule();
-    }
-    driveCommand(0, 0, 0).schedule();
-  }
-
-  public void idle(long ms) {
-    long start = System.currentTimeMillis();
-    while (System.currentTimeMillis() < start + ms) {
-      driveCommand(0, 0, 0).schedule();
-    }
-  }
-  
-  public Command driveCommand(double x, double y, double theta) {
-    return new DefaultDriveCommand(
-      m_drivetrainSubsystem,
-      () -> x,
-      () -> y,
-      () -> theta);
-  }
-  */
 
   private static double deadband(double value, double deadband) {
     if (Math.abs(value) > deadband) {

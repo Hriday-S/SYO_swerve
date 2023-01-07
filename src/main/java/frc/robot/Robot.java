@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
@@ -14,13 +15,14 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
+  RobotContainer m_container;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
-    new RobotContainer();
+    m_container = new RobotContainer();
   }
 
   /**
@@ -42,12 +44,12 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    /*
-    m_robotContainer.rotate(30, 0.5);
-    m_robotContainer.translate(0, 1, 0.75);
-    m_robotContainer.rotate(-30, 0.5);
-    m_robotContainer.translate(-1, -1, 0.75);
-    */
+    CommandScheduler.getInstance().cancelAll();
+    m_container.reset();
+
+    for (Command command : m_container.autonomousCommands()) {
+      command.schedule();
+    }
   }
 
   /** This function is called periodically during autonomous. */

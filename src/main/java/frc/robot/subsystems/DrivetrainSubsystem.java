@@ -22,12 +22,19 @@ import static frc.robot.Constants.FRONT_RIGHT_MODULE_DRIVE_MOTOR;
 import static frc.robot.Constants.FRONT_RIGHT_MODULE_STEER_ENCODER;
 import static frc.robot.Constants.FRONT_RIGHT_MODULE_STEER_MOTOR;
 import static frc.robot.Constants.FRONT_RIGHT_MODULE_STEER_OFFSET;
+import static frc.robot.Constants.FRONT_LEFT_MODULE_DRIVE_ENCODER;
+import static frc.robot.Constants.FRONT_RIGHT_MODULE_DRIVE_ENCODER;
+import static frc.robot.Constants.BACK_LEFT_MODULE_DRIVE_ENCODER;
+import static frc.robot.Constants.BACK_RIGHT_MODULE_DRIVE_ENCODER;
 
 // import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
+
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -89,11 +96,26 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // FIXME Uncomment if you are using a NavX
   private final AHRS m_navx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
 
+  private double m_angle;
+
   // These are our modules. We initialize them in the constructor.
   private final SwerveModule m_frontLeftModule;
   private final SwerveModule m_frontRightModule;
   private final SwerveModule m_backLeftModule;
   private final SwerveModule m_backRightModule;
+
+  // These are our drive encoders. We initialize them in the constructor.
+  private final CANCoder m_frontLeftEncoder;
+  private final CANCoder m_frontRightEncoder;
+  private final CANCoder m_backLeftEncoder;
+  private final CANCoder m_backRightEncoder;
+
+  private double m_frontLeftEncoderAngle;
+  private double m_frontRightEncoderAngle;
+  private double m_backLeftEncoderAngle;
+  private double m_backRightEncoderAngle;
+
+  private final CANCoderConfiguration m_config = new CANCoderConfiguration();
 
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -170,6 +192,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
             BACK_RIGHT_MODULE_STEER_ENCODER,
             BACK_RIGHT_MODULE_STEER_OFFSET
     );
+
+    // We initialize the drive encoders to their ID
+    m_frontLeftEncoder = new CANCoder(FRONT_LEFT_MODULE_DRIVE_ENCODER);
+    m_frontRightEncoder = new CANCoder(FRONT_RIGHT_MODULE_DRIVE_ENCODER);
+    m_backLeftEncoder = new CANCoder(BACK_LEFT_MODULE_DRIVE_ENCODER);
+    m_backRightEncoder = new CANCoder(BACK_RIGHT_MODULE_DRIVE_ENCODER);
+
+    // Set units of the CANCoder to meters
+    m_config.sensorCoefficient = 0.10033 * Math.PI / 4096.0;
+    m_config.unitString = "m";
+    
+    m_frontLeftEncoder.configAllSettings(m_config);
+    m_frontRightEncoder.configAllSettings(m_config);
+    m_backLeftEncoder.configAllSettings(m_config);
+    m_backRightEncoder.configAllSettings(m_config);
   }
 
   /**
@@ -184,28 +221,28 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_navx.zeroYaw();
   }
 
-  /*
-  public void calibrateNavx() {
-        m_navx.calibrate();
-        while (m_navx.isCalibrating() || !m_navx.isConnected()) {
-                Timer.delay(1);
-        }
+  /**
+   * Updates recorded gyrosope angle.
+   */
+  public void updateAngle() {
+    m_angle = m_navx.getAngle();
   }
 
-  public AHRS getNavx() {
-        return m_navx;
+  /**
+   * Updates all recorded drive encoder positions.
+   */
+  public void updateDriveEncoders() {
+    m_frontLeftEncoderAngle = m_frontLeftEncoder.getPosition();
+    m_frontRightEncoderAngle = m_frontRightEncoder.getPosition();
+    m_backLeftEncoderAngle = m_backLeftEncoder.getPosition();
+    m_backRightEncoderAngle = m_backRightEncoder.getPosition();
   }
-  */
 
   public Rotation2d getGyroscopeRotation() {
     // FIXME Remove if you are using a Pigeon
     // return Rotation2d.fromDegrees(m_pigeon.getFusedHeading());
 
-    // FIXME Disable NavX temporarily
-    return Rotation2d.fromDegrees(0);
-
     // FIXME Uncomment if you are using a NavX
-    /*
     if (m_navx.isMagnetometerCalibrated()) {
       // We will only get valid fused headings if the magnetometer is calibrated
       return Rotation2d.fromDegrees(m_navx.getFusedHeading());
@@ -213,7 +250,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
     return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());
-    */
+  }
+
+  public double getAngleTravelled() {
+    return Math.abs(m_navx.getAngle() - m_angle);
+  }
+
+  public double getDistanceTravelled() {
+    return (Math.abs(m_frontLeftEncoder.getPosition() - m_frontLeftEncoderAngle)
+          + Math.abs(m_frontRightEncoder.getPosition() - m_frontRightEncoderAngle)
+          + Math.abs(m_backLeftEncoder.getPosition() - m_backLeftEncoderAngle)
+          + Math.abs(m_backRightEncoder.getPosition() - m_backRightEncoderAngle)) / 4;
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
