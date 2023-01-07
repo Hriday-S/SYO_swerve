@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -30,6 +29,7 @@ public class RobotContainer {
   */
 
   private final Joystick m_controller = new Joystick(0);
+  private static double m_powerCap = 0.6;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -42,9 +42,9 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> -modifyAxis(m_controller.getRawAxis(1)) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRawAxis(0)) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRawAxis(4)) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> -modifyAxis(m_controller.getRawAxis(1), m_powerCap) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_controller.getRawAxis(0), m_powerCap) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_controller.getRawAxis(4), m_powerCap) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
     //m_climberSubsystem.setDefaultCommand(new DefaultClimberCommand(m_climberSubsystem, m_controller.getRawAxis(2) - m_controller.getRawAxis(3)));
 
@@ -56,12 +56,17 @@ public class RobotContainer {
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj.Joystick}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
     //A button resets Gyro
-    new Button(() -> m_controller.getRawButton(1)).whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+    Button m_resetGyro = new Button(() -> m_controller.getRawButton(1));
+    m_resetGyro.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+
+    Button m_turbo = new Button(() -> (m_controller.getRawAxis(2) > 0.5 && m_controller.getRawAxis(3) > 0.5));
+    m_turbo.whenPressed(() -> setTurbo(1.0));
+    m_turbo.whenReleased(() -> setTurbo(0.6));
   }
 
   /*
@@ -118,13 +123,18 @@ public class RobotContainer {
     }
   } 
 
-  private static double modifyAxis(double value) {
+  private static double modifyAxis(double value, double limit) {
     // Deadband
     value = deadband(value, 0.05);
 
-    // Square the axis
-    value = Math.copySign(value * value, value);
+    // Cube the axis and set the limit
+    value = Math.pow(value, 3) * limit;
 
     return value;
+  }
+
+  private static void setTurbo(double power) 
+  {
+    m_powerCap = power;
   }
 }
