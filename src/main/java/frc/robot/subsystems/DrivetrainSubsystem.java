@@ -225,7 +225,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * Updates recorded gyrosope angle.
    */
   public void updateAngle() {
-    m_angle = m_navx.getAngle();
+    m_angle = -m_navx.getAngle();
   }
 
   /**
@@ -253,7 +253,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public double getAngleTravelled() {
-    return Math.abs(m_navx.getAngle() - m_angle);
+    return Math.abs(-m_navx.getAngle() - m_angle);
   }
 
   public double getDistanceTravelled() {
