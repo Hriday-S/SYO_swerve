@@ -54,7 +54,7 @@ public class RobotContainer {
   public void reset() {
     m_drivetrainSubsystem.zeroGyroscope();
     m_drivetrainSubsystem.updateAngle();
-    m_drivetrainSubsystem.updateDriveEncoders();
+    m_drivetrainSubsystem.updateDistance();
   }
 
   public List<Command> autonomousCommands() {
