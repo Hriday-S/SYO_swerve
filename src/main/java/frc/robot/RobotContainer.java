@@ -44,7 +44,7 @@ public class RobotContainer {
             m_drivetrainSubsystem,
             () -> -modifyAxis(m_controller.getRawAxis(1), m_powerCap) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> -modifyAxis(m_controller.getRawAxis(0), m_powerCap) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRawAxis(4), m_powerCap) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> -modifyAxis(m_controller.getRawAxis(2), m_powerCap) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
     // Configure the button bindings
@@ -75,9 +75,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Holding down both triggers activates turbo speed
-    Button m_turbo = new Button(() -> (m_controller.getRawAxis(2) > 0.5 && m_controller.getRawAxis(3) > 0.5));
+    Button m_turbo = new Button(() -> m_controller.getRawButton(1));
     m_turbo.whenPressed(() -> setTurbo(1.0));
-    m_turbo.whenReleased(() -> setTurbo(0.6));
+    m_turbo.whenReleased(() -> setTurbo(0.5));
   }
 
   private static double deadband(double value, double deadband) {
@@ -94,7 +94,7 @@ public class RobotContainer {
 
   private static double modifyAxis(double value, double limit) {
     // Deadband
-    value = deadband(value, 0.05);
+    value = deadband(value, 0.125);
 
     // Cube the axis and set the limit
     value = Math.pow(value, 3) * limit;
