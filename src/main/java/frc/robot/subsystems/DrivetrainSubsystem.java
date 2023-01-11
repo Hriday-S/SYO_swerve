@@ -25,9 +25,10 @@ import static frc.robot.Constants.FRONT_RIGHT_MODULE_STEER_OFFSET;
 
 // import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
-import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-import com.swervedrivespecialties.swervelib.SwerveModule;
+import com.revrobotics.RelativeEncoder;
+import com.syossetfrc.swervelib.Mk4iSwerveModuleHelper;
+import com.syossetfrc.swervelib.SdsModuleConfigurations;
+import com.syossetfrc.swervelib.SwerveModule;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -90,14 +91,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final AHRS m_navx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
 
   private double m_angle;
-  private double m_distanceX;
-  private double m_distanceY;
+  private double m_frontLeftDistance;
+  private double m_frontRightDistance;
+  private double m_backLeftDistance;
+  private double m_backRightDistance;
 
   // These are our modules. We initialize them in the constructor.
   private final SwerveModule m_frontLeftModule;
   private final SwerveModule m_frontRightModule;
   private final SwerveModule m_backLeftModule;
   private final SwerveModule m_backRightModule;
+  
+  private final RelativeEncoder m_frontLeftDriveEncoder;
+  private final RelativeEncoder m_frontRightDriveEncoder;
+  private final RelativeEncoder m_backLeftDriveEncoder;
+  private final RelativeEncoder m_backRightDriveEncoder;
 
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -174,6 +182,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
             BACK_RIGHT_MODULE_STEER_ENCODER,
             BACK_RIGHT_MODULE_STEER_OFFSET
     );
+
+    m_frontLeftDriveEncoder = m_frontLeftModule.getDriveEncoder();
+    m_frontRightDriveEncoder = m_frontRightModule.getDriveEncoder();
+    m_backLeftDriveEncoder = m_backLeftModule.getDriveEncoder();
+    m_backRightDriveEncoder = m_backRightModule.getDriveEncoder();
   }
 
   /**
@@ -186,7 +199,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     // FIXME Uncomment if you are using a NavX
     m_navx.zeroYaw();
-    m_navx.resetDisplacement();
   }
 
   /**
@@ -200,8 +212,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * Updates all recorded drive encoder positions.
    */
   public void updateDistance() {
-    m_distanceX = m_navx.getDisplacementX();
-    m_distanceY = m_navx.getDisplacementY();
+    m_frontLeftDistance = m_frontLeftDriveEncoder.getPosition();
+    m_frontRightDistance = m_frontRightDriveEncoder.getPosition();
+    m_backLeftDistance = m_backLeftDriveEncoder.getPosition();
+    m_backRightDistance = m_backRightDriveEncoder.getPosition();
   }
 
   public Rotation2d getGyroscopeRotation() {
@@ -223,7 +237,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public double getDistanceTravelled() {
-    return Math.hypot(m_navx.getDisplacementX() - m_distanceX, m_navx.getDisplacementY() - m_distanceY);
+    return ((m_frontLeftDriveEncoder.getPosition() - m_frontLeftDistance)
+            + (m_frontRightDriveEncoder.getPosition() - m_frontRightDistance)
+            + (m_backLeftDriveEncoder.getPosition() - m_backLeftDistance)
+            + (m_backRightDriveEncoder.getPosition() - m_backRightDistance)) / 4;
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
