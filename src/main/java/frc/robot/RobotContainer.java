@@ -60,10 +60,10 @@ public class RobotContainer {
   public List<Command> autonomousCommands() {
     return new ArrayList<Command>(Arrays.asList(
         // Example autonomous commands
-        new TranslationDriveCommand(m_drivetrainSubsystem, 1, 1, 0.4),
-        new RotationDriveCommand(m_drivetrainSubsystem, 90, 0.3),
-        new TranslationDriveCommand(m_drivetrainSubsystem, -1, -1, 0.4),
-        new RotationDriveCommand(m_drivetrainSubsystem, -90, 0.3)
+        new TranslationDriveCommand(m_drivetrainSubsystem, 1, 0, 0.4)//,
+        //new RotationDriveCommand(m_drivetrainSubsystem, 90, 0.3),
+        //new TranslationDriveCommand(m_drivetrainSubsystem, -1, -1, 0.4),
+        //new RotationDriveCommand(m_drivetrainSubsystem, -90, 0.3)
     ));
   }
 
