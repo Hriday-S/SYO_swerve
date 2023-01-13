@@ -57,11 +57,15 @@ public class RobotContainer {
     m_drivetrainSubsystem.updateDistance();
   }
 
+  public void setIdleMode(int mode) {
+    m_drivetrainSubsystem.setIdleMode(mode);
+  }
+
   public List<Command> autonomousCommands() {
     return new ArrayList<Command>(Arrays.asList(
         // Example autonomous commands
-        new TranslationDriveCommand(m_drivetrainSubsystem, 1, 0, 0.4)//,
-        //new RotationDriveCommand(m_drivetrainSubsystem, 90, 0.3),
+        new TranslationDriveCommand(m_drivetrainSubsystem, 1, 0, 0.4),
+        new RotationDriveCommand(m_drivetrainSubsystem, 90, 0.1)//,
         //new TranslationDriveCommand(m_drivetrainSubsystem, -1, -1, 0.4),
         //new RotationDriveCommand(m_drivetrainSubsystem, -90, 0.3)
     ));
@@ -74,6 +78,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    //A button resets Gyro
+    Button m_resetGyro = new Button(() -> m_controller.getRawButton(3));
+    m_resetGyro.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+
     // Holding down both triggers activates turbo speed
     Button m_turbo = new Button(() -> m_controller.getRawButton(1));
     m_turbo.whenPressed(() -> setTurbo(1.0));

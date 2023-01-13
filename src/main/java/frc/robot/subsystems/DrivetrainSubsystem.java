@@ -237,10 +237,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public double getDistanceTravelled() {
-    return ((m_frontLeftDriveEncoder.getPosition() - m_frontLeftDistance)
-            + (m_frontRightDriveEncoder.getPosition() - m_frontRightDistance)
-            + (m_backLeftDriveEncoder.getPosition() - m_backLeftDistance)
-            + (m_backRightDriveEncoder.getPosition() - m_backRightDistance)) / 4;
+    return (Math.abs(m_frontLeftDriveEncoder.getPosition() - m_frontLeftDistance)
+            + Math.abs(m_frontRightDriveEncoder.getPosition() - m_frontRightDistance)
+            + Math.abs(m_backLeftDriveEncoder.getPosition() - m_backLeftDistance)
+            + Math.abs(m_backRightDriveEncoder.getPosition() - m_backRightDistance)) / 4;
+  }
+
+  public void setIdleMode(int mode) {
+    m_frontLeftModule.setIdleMode(mode);
+    m_frontRightModule.setIdleMode(mode);
+    m_backLeftModule.setIdleMode(mode);
+    m_backRightModule.setIdleMode(mode);
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {

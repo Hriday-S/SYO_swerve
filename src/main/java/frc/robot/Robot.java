@@ -46,6 +46,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     CommandScheduler.getInstance().cancelAll();
     m_container.reset();
+    m_container.setIdleMode(0);
 
     for (Command command : m_container.autonomousCommands()) {
       command.schedule();
@@ -63,6 +64,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     CommandScheduler.getInstance().cancelAll();
+    m_container.setIdleMode(1);
   }
 
   /** This function is called periodically during operator control. */

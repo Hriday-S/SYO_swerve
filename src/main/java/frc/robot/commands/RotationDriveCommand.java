@@ -16,7 +16,7 @@ public class RotationDriveCommand extends CommandBase {
                                double angle, 
                                double power) {
         this.m_drivetrainSubsystem = drivetrainSubsystem;
-        this.m_angleDistance = Math.abs(angle);
+        this.m_angleDistance = Math.abs(angle) + getPowerOffset(power);
         this.m_rotationSupplier = () -> Math.copySign(1, angle) * power * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
         addRequirements(drivetrainSubsystem);
@@ -48,5 +48,9 @@ public class RotationDriveCommand extends CommandBase {
         m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
         m_drivetrainSubsystem.updateDistance();
         m_drivetrainSubsystem.updateAngle();
+    }
+
+    public double getPowerOffset(double power) {
+        return 90 - (65 * power + 88.5);
     }
 }
