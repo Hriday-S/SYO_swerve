@@ -50,6 +50,5 @@ public class TranslationDriveCommand extends CommandBase {
     public void end(boolean interrupted) {
         m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
         m_drivetrainSubsystem.updateDistance();
-        m_drivetrainSubsystem.updateAngle();
     }
 }

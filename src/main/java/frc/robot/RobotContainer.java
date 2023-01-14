@@ -53,7 +53,6 @@ public class RobotContainer {
 
   public void reset() {
     m_drivetrainSubsystem.zeroGyroscope();
-    m_drivetrainSubsystem.updateAngle();
     m_drivetrainSubsystem.updateDistance();
   }
 

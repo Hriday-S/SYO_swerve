@@ -90,7 +90,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // FIXME Uncomment if you are using a NavX
   private final AHRS m_navx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
 
-  private double m_angle;
   private double m_frontLeftDistance;
   private double m_frontRightDistance;
   private double m_backLeftDistance;
@@ -202,13 +201,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /**
-   * Updates recorded gyrosope angle.
-   */
-  public void updateAngle() {
-    m_angle = -m_navx.getAngle();
-  }
-
-  /**
    * Updates all recorded drive encoder positions.
    */
   public void updateDistance() {
@@ -230,10 +222,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
     return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());
-  }
-
-  public double getAngleTravelled() {
-    return Math.abs(-m_navx.getAngle() - m_angle);
   }
 
   public double getDistanceTravelled() {

@@ -4,19 +4,22 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
+import static frc.robot.Constants.DRIVETRAIN_TRACKWIDTH_METERS;
+import static frc.robot.Constants.DRIVETRAIN_WHEELBASE_METERS;
+
 import java.util.function.DoubleSupplier;
 
 public class RotationDriveCommand extends CommandBase {
     private final DrivetrainSubsystem m_drivetrainSubsystem;
 
-    private final double m_angleDistance;
+    private final double m_arcLength;
     private final DoubleSupplier m_rotationSupplier;
 
     public RotationDriveCommand(DrivetrainSubsystem drivetrainSubsystem,
                                double angle, 
                                double power) {
         this.m_drivetrainSubsystem = drivetrainSubsystem;
-        this.m_angleDistance = Math.abs(angle) + getPowerOffset(power);
+        this.m_arcLength = (Math.abs(angle) / 360.0) * Math.PI * Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS, DRIVETRAIN_WHEELBASE_METERS);
         this.m_rotationSupplier = () -> Math.copySign(1, angle) * power * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
         addRequirements(drivetrainSubsystem);
@@ -37,7 +40,7 @@ public class RotationDriveCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (m_drivetrainSubsystem.getAngleTravelled() < m_angleDistance) {
+        if (m_drivetrainSubsystem.getDistanceTravelled() < m_arcLength) {
             return false;
         }
         return true;
@@ -47,10 +50,5 @@ public class RotationDriveCommand extends CommandBase {
     public void end(boolean interrupted) {
         m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
         m_drivetrainSubsystem.updateDistance();
-        m_drivetrainSubsystem.updateAngle();
-    }
-
-    public double getPowerOffset(double power) {
-        return 90 - (65 * power + 88.5);
     }
 }
