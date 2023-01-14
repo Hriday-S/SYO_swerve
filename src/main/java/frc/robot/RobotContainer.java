@@ -44,7 +44,7 @@ public class RobotContainer {
             m_drivetrainSubsystem,
             () -> -modifyAxis(m_controller.getRawAxis(1), m_powerCap) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> -modifyAxis(m_controller.getRawAxis(0), m_powerCap) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRawAxis(2), m_powerCap) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> -modifyAxis(m_controller.getRawAxis(2), m_powerCap) * 0.5 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
     // Configure the button bindings
@@ -63,10 +63,10 @@ public class RobotContainer {
   public List<Command> autonomousCommands() {
     return new ArrayList<Command>(Arrays.asList(
         // Example autonomous commands
-        new TranslationDriveCommand(m_drivetrainSubsystem, 1, 0, 0.4),
-        new RotationDriveCommand(m_drivetrainSubsystem, 90, 0.1)//,
-        //new TranslationDriveCommand(m_drivetrainSubsystem, -1, -1, 0.4),
-        //new RotationDriveCommand(m_drivetrainSubsystem, -90, 0.3)
+        new TranslationDriveCommand(m_drivetrainSubsystem, 1, 1, 0.4),
+        new RotationDriveCommand(m_drivetrainSubsystem, 90, 0.3),
+        new TranslationDriveCommand(m_drivetrainSubsystem, -1, -1, 0.4),
+        new RotationDriveCommand(m_drivetrainSubsystem, -90, 0.3)
     ));
   }
 
