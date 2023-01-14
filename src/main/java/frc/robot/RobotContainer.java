@@ -4,15 +4,11 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.Button;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.TranslationDriveCommand;
 import frc.robot.commands.RotationDriveCommand;
@@ -29,7 +25,7 @@ public class RobotContainer {
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
 
   private final Joystick m_controller = new Joystick(0);
-  private static double m_powerCap = 0.6;
+  private static double m_powerCap = 0.5;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -42,9 +38,9 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> -modifyAxis(m_controller.getRawAxis(1), m_powerCap) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRawAxis(0), m_powerCap) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRawAxis(2), m_powerCap) * 0.5 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> -modifyAxis(m_controller.getRawAxis(1), m_powerCap) * (-m_controller.getRawAxis(3) + 1) * 0.5 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_controller.getRawAxis(0), m_powerCap) * (-m_controller.getRawAxis(3) + 1) * 0.5 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_controller.getRawAxis(2), m_powerCap) * (-m_controller.getRawAxis(3) + 1) * 0.25 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
     // Configure the button bindings
@@ -60,14 +56,13 @@ public class RobotContainer {
     m_drivetrainSubsystem.setIdleMode(mode);
   }
 
-  public List<Command> autonomousCommands() {
-    return new ArrayList<Command>(Arrays.asList(
-        // Example autonomous commands
+  public SequentialCommandGroup autonomousCommands() {
+    return new SequentialCommandGroup(
         new TranslationDriveCommand(m_drivetrainSubsystem, 1, 1, 0.4),
         new RotationDriveCommand(m_drivetrainSubsystem, 90, 0.3),
         new TranslationDriveCommand(m_drivetrainSubsystem, -1, -1, 0.4),
         new RotationDriveCommand(m_drivetrainSubsystem, -90, 0.3)
-    ));
+    );
   }
 
   /**
