@@ -58,10 +58,10 @@ public class RobotContainer {
 
   public SequentialCommandGroup autonomousCommands() {
     return new SequentialCommandGroup(
-        new TranslationDriveCommand(m_drivetrainSubsystem, 1, 1, 0.4),
-        new RotationDriveCommand(m_drivetrainSubsystem, 90, 0.3),
-        new TranslationDriveCommand(m_drivetrainSubsystem, -1, -1, 0.4),
-        new RotationDriveCommand(m_drivetrainSubsystem, -90, 0.3)
+        new TranslationDriveCommand(m_drivetrainSubsystem, 1, 1, 0.25),
+        new RotationDriveCommand(m_drivetrainSubsystem, 90, 0.15),
+        new TranslationDriveCommand(m_drivetrainSubsystem, -1, -1, 0.25),
+        new RotationDriveCommand(m_drivetrainSubsystem, -90, 0.15)
     );
   }
 
