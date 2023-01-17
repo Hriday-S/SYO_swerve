@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.TranslationDriveCommand;
 import frc.robot.commands.RotationDriveCommand;
+import frc.robot.commands.IdleDriveCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 /**
@@ -59,8 +60,11 @@ public class RobotContainer {
   public SequentialCommandGroup autonomousCommands() {
     return new SequentialCommandGroup(
         new TranslationDriveCommand(m_drivetrainSubsystem, 1, 1, 0.25),
+        new IdleDriveCommand(m_drivetrainSubsystem, 750),
         new RotationDriveCommand(m_drivetrainSubsystem, 90, 0.15),
+        new IdleDriveCommand(m_drivetrainSubsystem, 750),
         new TranslationDriveCommand(m_drivetrainSubsystem, -1, -1, 0.25),
+        new IdleDriveCommand(m_drivetrainSubsystem, 750),
         new RotationDriveCommand(m_drivetrainSubsystem, -90, 0.15)
     );
   }
