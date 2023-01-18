@@ -60,11 +60,11 @@ public class RobotContainer {
   public SequentialCommandGroup autonomousCommands() {
     return new SequentialCommandGroup(
         new TranslationDriveCommand(m_drivetrainSubsystem, 1, 1, 0.25),
-        new IdleDriveCommand(m_drivetrainSubsystem, 750),
+        new IdleDriveCommand(m_drivetrainSubsystem, 300),
         new RotationDriveCommand(m_drivetrainSubsystem, 90, 0.15),
-        new IdleDriveCommand(m_drivetrainSubsystem, 750),
+        new IdleDriveCommand(m_drivetrainSubsystem, 300),
         new TranslationDriveCommand(m_drivetrainSubsystem, -1, -1, 0.25),
-        new IdleDriveCommand(m_drivetrainSubsystem, 750),
+        new IdleDriveCommand(m_drivetrainSubsystem, 300),
         new RotationDriveCommand(m_drivetrainSubsystem, -90, 0.15)
     );
   }
