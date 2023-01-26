@@ -87,7 +87,7 @@ public class RobotContainer {
 
     // Side thumb button hard brakes
     Button m_brake = new Button(() -> m_controller.getRawButton(2));
-    m_brake.whileHeld(() -> new IdleDriveCommand(m_drivetrainSubsystem, 50)).whileHeld(() -> setIdleMode(0));
+    m_brake.whenPressed(() -> setIdleMode(0));
     m_brake.whenReleased(() -> setIdleMode(1));
   }
 
