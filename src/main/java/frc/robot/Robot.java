@@ -44,6 +44,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     CommandScheduler.getInstance().cancelAll();
+
     m_container.reset();
     m_container.setIdleMode(0);
 
@@ -61,6 +62,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     CommandScheduler.getInstance().cancelAll();
+    
     m_container.setIdleMode(1);
   }
 

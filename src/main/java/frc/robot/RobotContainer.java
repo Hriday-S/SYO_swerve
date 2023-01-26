@@ -76,14 +76,19 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //A button resets Gyro
+    // Bottom-left button on thumbpad zeroes gyroscope
     Button m_resetGyro = new Button(() -> m_controller.getRawButton(3));
     m_resetGyro.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
 
-    // Holding down both triggers activates turbo speed
+    // Holding down trigger activates turbo speed
     Button m_turbo = new Button(() -> m_controller.getRawButton(1));
     m_turbo.whenPressed(() -> setTurbo(1.0));
     m_turbo.whenReleased(() -> setTurbo(0.5));
+
+    // Side thumb button hard brakes
+    Button m_brake = new Button(() -> m_controller.getRawButton(2));
+    m_brake.whileHeld(() -> new IdleDriveCommand(m_drivetrainSubsystem, 50)).whileHeld(() -> setIdleMode(0));
+    m_brake.whenReleased(() -> setIdleMode(1));
   }
 
   private static double deadband(double value, double deadband) {
