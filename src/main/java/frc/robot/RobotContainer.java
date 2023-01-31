@@ -15,6 +15,13 @@ import frc.robot.commands.RotationDriveCommand;
 import frc.robot.commands.IdleDriveCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
+import org.opencv.video.Video;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSink;
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -27,6 +34,10 @@ public class RobotContainer {
 
   private final Joystick m_controller = new Joystick(0);
   private static double m_powerCap = 0.5;
+
+  private final UsbCamera m_driveCamera;
+  private final UsbCamera m_subsystemCamera;
+  private final VideoSink m_cameraServer;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -43,6 +54,13 @@ public class RobotContainer {
             () -> -modifyAxis(m_controller.getRawAxis(0), m_powerCap) * (-m_controller.getRawAxis(3) + 1) * 0.5 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> -modifyAxis(m_controller.getRawAxis(2), m_powerCap) * (-m_controller.getRawAxis(3) + 1) * 0.25 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
+
+    m_driveCamera = CameraServer.startAutomaticCapture(0);
+    m_subsystemCamera = CameraServer.startAutomaticCapture(1);
+    m_cameraServer = CameraServer.getServer();
+
+    m_driveCamera.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+    m_subsystemCamera.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -89,6 +107,12 @@ public class RobotContainer {
     Button m_brake = new Button(() -> m_controller.getRawButton(2));
     m_brake.whenPressed(() -> setIdleMode(0));
     m_brake.whenReleased(() -> setIdleMode(1));
+
+    Button m_driveView = new Button(() -> m_controller.getRawButton(11));
+    m_driveView.whenPressed(() -> m_cameraServer.setSource(m_driveCamera));
+
+    Button m_subsystemView = new Button(() -> m_controller.getRawButton(12));
+    m_subsystemView.whenPressed(() -> m_cameraServer.setSource(m_subsystemCamera));
   }
 
   private static double deadband(double value, double deadband) {
