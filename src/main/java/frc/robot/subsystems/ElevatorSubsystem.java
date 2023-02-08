@@ -29,8 +29,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         m_elevatorPulleyEncoder = m_elevatorPulley.getEncoder();
         m_winchEncoder = m_winch.getEncoder();
-        m_elevatorPulleyEncoder.setPositionConversionFactor(1);
-        m_winchEncoder.setPositionConversionFactor(1);
+        m_elevatorPulleyEncoder.setPositionConversionFactor(1); // meters
+        m_winchEncoder.setPositionConversionFactor(1); // degrees
         m_elevatorPulleyEncoder.setPosition(0);
         m_winchEncoder.setPosition(0);
     }

@@ -7,17 +7,19 @@ public class ExtensionElevatorCommand extends CommandBase {
     private final ElevatorSubsystem m_elevatorSubsystem;
 
     private final double m_elevatorPulleyDistance;
+    private final double m_power;
 
-    public ExtensionElevatorCommand(ElevatorSubsystem elevatorSubsystem, double elevatorPulleyDistance) {
+    public ExtensionElevatorCommand(ElevatorSubsystem elevatorSubsystem, double elevatorPulleyDistance, double power) {
         m_elevatorSubsystem = elevatorSubsystem;
         m_elevatorPulleyDistance = elevatorPulleyDistance;
+        m_power = power;
 
         addRequirements(elevatorSubsystem);
     }
 
     @Override
     public void execute() {
-        m_elevatorSubsystem.extend(Math.copySign(0.25, m_elevatorPulleyDistance));
+        m_elevatorSubsystem.extend(Math.copySign(m_power, m_elevatorPulleyDistance));
     }
 
     @Override
@@ -31,5 +33,6 @@ public class ExtensionElevatorCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         m_elevatorSubsystem.extend(0);
+        m_elevatorSubsystem.updatePositions();
     }
 }

@@ -7,7 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.Button;
-
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.TranslationDriveCommand;
@@ -35,7 +35,8 @@ public class RobotContainer {
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
 
-  private final Joystick m_controller = new Joystick(0);
+  private final Joystick m_driveController = new Joystick(0);
+  private final Joystick m_operatorController = new Joystick(1);
   private static double m_powerCap = 0.5;
 
   private final UsbCamera m_driveCamera;
@@ -53,9 +54,15 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> -modifyAxis(m_controller.getRawAxis(1), m_powerCap) * 0.5 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRawAxis(0), m_powerCap) * 0.5 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRawAxis(4), m_powerCap) * 0.25 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> -modifyAxis(m_driveController.getRawAxis(1), m_powerCap) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_driveController.getRawAxis(0), m_powerCap) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_driveController.getRawAxis(4), m_powerCap) * 0.5 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    ));
+
+    m_elevatorSubsystem.setDefaultCommand(new DefaultElevatorCommand(
+            m_elevatorSubsystem, 
+            -m_operatorController.getRawAxis(1), 
+            -m_operatorController.getRawAxis(5)
     ));
 
     m_driveCamera = CameraServer.startAutomaticCapture(0);
@@ -72,6 +79,7 @@ public class RobotContainer {
   public void reset() {
     m_drivetrainSubsystem.zeroGyroscope();
     m_drivetrainSubsystem.updateDistance();
+    m_elevatorSubsystem.updatePositions();
   }
 
   public void setIdleMode(int mode) {
@@ -79,6 +87,7 @@ public class RobotContainer {
   }
 
   public SequentialCommandGroup autonomousCommands() {
+    /*
     return new SequentialCommandGroup(
         new TranslationDriveCommand(m_drivetrainSubsystem, 0.5, 0.5, 0.25),
         new IdleDriveCommand(m_drivetrainSubsystem, 300),
@@ -87,6 +96,17 @@ public class RobotContainer {
         new TranslationDriveCommand(m_drivetrainSubsystem, -0.5, -0.5, 0.25),
         new IdleDriveCommand(m_drivetrainSubsystem, 300),
         new TranslationDriveCommand(m_drivetrainSubsystem, 0.5, -0.5, 0.25)
+    );
+    */
+    return new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            new ExtensionElevatorCommand(m_elevatorSubsystem, 0.25, 0.5),
+            new RotationElevatorCommand(m_elevatorSubsystem, 30, 0.5)
+        ),
+        new ParallelCommandGroup(
+          new ExtensionElevatorCommand(m_elevatorSubsystem, -0.25, 0.5),
+          new RotationElevatorCommand(m_elevatorSubsystem, -30, 0.5)
+        )
     );
   }
 
@@ -97,24 +117,26 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Bottom-left button on thumbpad zeroes gyroscope
-    Button m_resetGyro = new Button(() -> m_controller.getRawButton(1));
+    // A button zeroes gyroscope
+    Button m_resetGyro = new Button(() -> m_driveController.getRawButton(1));
     m_resetGyro.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
 
-    // Holding down trigger activates turbo speed
-    Button m_turbo = new Button(() -> m_controller.getRawAxis(2) > 0.5);
+    // Holding down left trigger activates turbo speed
+    Button m_turbo = new Button(() -> m_driveController.getRawAxis(2) > 0.5);
     m_turbo.whenPressed(() -> setTurbo(1.0));
     m_turbo.whenReleased(() -> setTurbo(0.5));
 
-    // Side thumb button hard brakes
-    Button m_brake = new Button(() -> m_controller.getRawAxis(3) > 0.5);
+    // Holding down right trigger activates hard brakes
+    Button m_brake = new Button(() -> m_driveController.getRawAxis(3) > 0.5);
     m_brake.whenPressed(() -> setIdleMode(0));
     m_brake.whenReleased(() -> setIdleMode(1));
 
-    Button m_driveView = new Button(() -> m_controller.getRawButton(2));
+    // X button changes camera view
+    Button m_driveView = new Button(() -> m_driveController.getRawButton(2));
     m_driveView.whenPressed(() -> m_cameraServer.setSource(m_driveCamera));
 
-    Button m_subsystemView = new Button(() -> m_controller.getRawButton(3));
+    // B button changes camera view
+    Button m_subsystemView = new Button(() -> m_driveController.getRawButton(3));
     m_subsystemView.whenPressed(() -> m_cameraServer.setSource(m_subsystemCamera));
   }
 
