@@ -47,4 +47,7 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 15; // FIXME Set back right steer motor ID
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 52; // FIXME Set back right steer encoder ID
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(34.3+180); // FIXME Measure and set back right steer offset
+
+    public static final int ELEVATOR_PULLEY_MOTOR = 60; // FIXME Set elevator pulley motor ID
+    public static final int WINCH_MOTOR = 61; // FIXME Set winch motor ID
 }

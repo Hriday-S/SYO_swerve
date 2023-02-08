@@ -14,8 +14,10 @@ import frc.robot.commands.TranslationDriveCommand;
 import frc.robot.commands.RotationDriveCommand;
 import frc.robot.commands.IdleDriveCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
-
-import org.opencv.video.Video;
+import frc.robot.commands.DefaultElevatorCommand;
+import frc.robot.commands.ExtensionElevatorCommand;
+import frc.robot.commands.RotationElevatorCommand;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -31,6 +33,7 @@ import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
 
   private final Joystick m_controller = new Joystick(0);
   private static double m_powerCap = 0.5;
@@ -50,9 +53,9 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> -modifyAxis(m_controller.getRawAxis(1), m_powerCap) * (-m_controller.getRawAxis(3) + 1) * 0.5 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRawAxis(0), m_powerCap) * (-m_controller.getRawAxis(3) + 1) * 0.5 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRawAxis(2), m_powerCap) * (-m_controller.getRawAxis(3) + 1) * 0.25 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> -modifyAxis(m_controller.getRawAxis(1), m_powerCap) * 0.5 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_controller.getRawAxis(0), m_powerCap) * 0.5 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_controller.getRawAxis(4), m_powerCap) * 0.25 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
     m_driveCamera = CameraServer.startAutomaticCapture(0);
@@ -95,23 +98,23 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Bottom-left button on thumbpad zeroes gyroscope
-    Button m_resetGyro = new Button(() -> m_controller.getRawButton(3));
+    Button m_resetGyro = new Button(() -> m_controller.getRawButton(1));
     m_resetGyro.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
 
     // Holding down trigger activates turbo speed
-    Button m_turbo = new Button(() -> m_controller.getRawButton(1));
+    Button m_turbo = new Button(() -> m_controller.getRawAxis(2) > 0.5);
     m_turbo.whenPressed(() -> setTurbo(1.0));
     m_turbo.whenReleased(() -> setTurbo(0.5));
 
     // Side thumb button hard brakes
-    Button m_brake = new Button(() -> m_controller.getRawButton(2));
+    Button m_brake = new Button(() -> m_controller.getRawAxis(3) > 0.5);
     m_brake.whenPressed(() -> setIdleMode(0));
     m_brake.whenReleased(() -> setIdleMode(1));
 
-    Button m_driveView = new Button(() -> m_controller.getRawButton(11));
+    Button m_driveView = new Button(() -> m_controller.getRawButton(2));
     m_driveView.whenPressed(() -> m_cameraServer.setSource(m_driveCamera));
 
-    Button m_subsystemView = new Button(() -> m_controller.getRawButton(12));
+    Button m_subsystemView = new Button(() -> m_controller.getRawButton(3));
     m_subsystemView.whenPressed(() -> m_cameraServer.setSource(m_subsystemCamera));
   }
 
@@ -129,7 +132,7 @@ public class RobotContainer {
 
   private static double modifyAxis(double value, double limit) {
     // Deadband
-    value = deadband(value, 0.125);
+    value = deadband(value, 0.1);
 
     // Cube the axis and set the limit
     value = Math.pow(value, 3) * limit;
