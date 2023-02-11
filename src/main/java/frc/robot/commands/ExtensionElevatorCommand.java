@@ -24,7 +24,7 @@ public class ExtensionElevatorCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (m_elevatorSubsystem.getDistanceTravelled() < m_elevatorPulleyDistance) {
+        if (m_elevatorSubsystem.getDistanceTravelled() < Math.abs(m_elevatorPulleyDistance)) {
             return false;
         }
         return true;

@@ -24,7 +24,7 @@ public class RotationElevatorCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (m_elevatorSubsystem.getAngleRotated() < m_elevatorRotationAngle) {
+        if (m_elevatorSubsystem.getAngleRotated() < Math.abs(m_elevatorRotationAngle)) {
             return false;
         }
         return true;

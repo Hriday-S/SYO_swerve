@@ -29,10 +29,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         m_elevatorPulleyEncoder = m_elevatorPulley.getEncoder();
         m_winchEncoder = m_winch.getEncoder();
-        m_elevatorPulleyEncoder.setPositionConversionFactor(1); // meters
-        m_winchEncoder.setPositionConversionFactor(1); // degrees
-        m_elevatorPulleyEncoder.setPosition(0);
-        m_winchEncoder.setPosition(0);
+        m_elevatorPulleyEncoder.setPositionConversionFactor(0); // FIXME Convert to meters
+        m_winchEncoder.setPositionConversionFactor(0); // FIXME Convert to degrees
+        m_elevatorPulleyEncoder.setPosition(m_elevatorPulleyPosition);
+        m_winchEncoder.setPosition(m_winchPosition);
     }
 
     public void extend(double elevatorPulleySpeed) {
