@@ -51,7 +51,6 @@ public final class Constants {
     public static final int ELEVATOR_PULLEY_MOTOR = 60; // FIXME Set elevator pulley motor ID
     public static final int WINCH_MOTOR = 61; // FIXME Set winch motor ID
 
-    public static final int WRIST_MOTOR = 70; // FIXME Set wrist motor ID
     public static final int INTAKE_MOTOR_1 = 71; // FIXME Set first intake motor ID
     public static final int INTAKE_MOTOR_2 = 72; // FIXME Set second intake motor ID
     public static final int CLAW_SOLENOID_FORWARD = 0; // FIXME Set forward claw solenoid ID

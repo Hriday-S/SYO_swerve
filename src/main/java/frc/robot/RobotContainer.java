@@ -18,10 +18,8 @@ import frc.robot.commands.IdleCommand;
 import frc.robot.commands.OpenIntakeCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.commands.DefaultElevatorCommand;
-import frc.robot.commands.DefaultIntakeCommand;
 import frc.robot.commands.ExtensionElevatorCommand;
 import frc.robot.commands.RotationElevatorCommand;
-import frc.robot.commands.RotationIntakeCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -60,20 +58,15 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> -modifyAxis(m_driveController.getRawAxis(1), m_drivePowerCap) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_driveController.getRawAxis(0), m_drivePowerCap) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_driveController.getRawAxis(4), m_drivePowerCap) * 0.5 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> -modifyAxis(m_driveController.getRawAxis(1), 0.1, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_driveController.getRawAxis(0), 0.1, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(m_driveController.getRawAxis(2), 0.4, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
     m_elevatorSubsystem.setDefaultCommand(new DefaultElevatorCommand(
             m_elevatorSubsystem, 
             -m_operatorController.getRawAxis(1), 
             -m_operatorController.getRawAxis(5)
-    ));
-
-    m_intakeSubsystem.setDefaultCommand(new DefaultIntakeCommand(
-            m_intakeSubsystem, 
-            m_operatorController.getRawAxis(2) - m_operatorController.getRawAxis(3)
     ));
 
     m_driveCamera = CameraServer.startAutomaticCapture(0);
@@ -121,14 +114,9 @@ public class RobotContainer {
     );
     /*
     return new SequentialCommandGroup(
-        new ParallelCommandGroup(
-            new RotationIntakeCommand(m_intakeSubsystem, 15, 0.5),
-            new OpenIntakeCommand(m_intakeSubsystem)
-        ),
-        new ParallelCommandGroup(
-            new RotationIntakeCommand(m_intakeSubsystem, -15, 0.5),
-            new CloseIntakeCommand(m_intakeSubsystem)
-        )
+        new OpenIntakeCommand(m_intakeSubsystem),
+        new IdleCommand(m_drivetrainSubsystem, m_elevatorSubsystem, 2500),
+        new CloseIntakeCommand(m_intakeSubsystem)
     );
     */
   }
@@ -140,17 +128,17 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Driver 'A' button zeroes gyroscope
-    Button m_resetGyro = new Button(() -> m_driveController.getRawButton(1));
+    // Driver bottom-left thumbpad button zeroes gyroscope
+    Button m_resetGyro = new Button(() -> m_driveController.getRawButton(3));
     m_resetGyro.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
 
-    // Holding down driver left trigger activates turbo speed
-    Button m_turbo = new Button(() -> m_driveController.getRawAxis(2) > 0.5);
+    // Holding down driver trigger activates turbo speed
+    Button m_turbo = new Button(() -> m_driveController.getRawButton(1));
     m_turbo.whenPressed(() -> setTurbo(1.0));
     m_turbo.whenReleased(() -> setTurbo(0.5));
 
-    // Holding down driver right trigger activates hard brakes
-    Button m_brake = new Button(() -> m_driveController.getRawAxis(3) > 0.5);
+    // Holding down side thumb button activates hard brakes
+    Button m_brake = new Button(() -> m_driveController.getRawButton(2));
     m_brake.whenPressed(() -> setIdleMode(0));
     m_brake.whenReleased(() -> setIdleMode(1));
 
@@ -162,12 +150,12 @@ public class RobotContainer {
     Button m_closeIntake = new Button(() -> m_operatorController.getRawButton(2));
     m_closeIntake.whenPressed(new CloseIntakeCommand(m_intakeSubsystem));
 
-    // Driver 'X' button changes camera view
-    Button m_driveView = new Button(() -> m_driveController.getRawButton(2));
+    // Driver bottom-left base button changes camera view
+    Button m_driveView = new Button(() -> m_driveController.getRawButton(11));
     m_driveView.whenPressed(() -> m_cameraServer.setSource(m_driveCamera));
 
-    // Driver 'B' button changes camera view
-    Button m_subsystemView = new Button(() -> m_driveController.getRawButton(3));
+    // Driver bottom-right base button changes camera view
+    Button m_subsystemView = new Button(() -> m_driveController.getRawButton(12));
     m_subsystemView.whenPressed(() -> m_cameraServer.setSource(m_subsystemCamera));
   }
 
@@ -183,9 +171,9 @@ public class RobotContainer {
     }
   } 
 
-  private static double modifyAxis(double value, double limit) {
+  private static double modifyAxis(double value, double deadband, double limit) {
     // Deadband
-    value = deadband(value, 0.1);
+    value = deadband(value, deadband);
 
     // Cube the axis and set the limit
     value = Math.pow(value, 3) * limit;
