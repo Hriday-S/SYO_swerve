@@ -26,11 +26,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         m_winch = new CANSparkMax(WINCH_MOTOR, MotorType.kBrushless);
         m_elevatorPulley.setIdleMode(IdleMode.kBrake);
         m_winch.setIdleMode(IdleMode.kBrake);
+        m_elevatorPulley.setInverted(true);
 
         m_elevatorPulleyEncoder = m_elevatorPulley.getEncoder();
         m_winchEncoder = m_winch.getEncoder();
-        m_elevatorPulleyEncoder.setPositionConversionFactor(0); // FIXME Convert to meters
-        m_winchEncoder.setPositionConversionFactor(0); // FIXME Convert to degrees
+        m_elevatorPulleyEncoder.setPositionConversionFactor(0.01); // FIXME Convert to meters
+        m_winchEncoder.setPositionConversionFactor(0.002356); // Convert from rotations to meters
         m_elevatorPulleyEncoder.setPosition(m_elevatorPulleyPosition);
         m_winchEncoder.setPosition(m_winchPosition);
     }
@@ -52,7 +53,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         return Math.abs(m_elevatorPulleyEncoder.getPosition() - m_elevatorPulleyPosition);
     }
 
-    public double getAngleRotated() {
+    public double getDistanceRotated() {
         return Math.abs(m_winchEncoder.getPosition() - m_winchPosition);
     }
 

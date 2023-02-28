@@ -24,7 +24,8 @@ public class RotationElevatorCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (m_elevatorSubsystem.getAngleRotated() < Math.abs(m_elevatorRotationAngle)) {
+        double m_currentAngleRotated = Math.toDegrees(Math.acos((Math.pow(m_elevatorSubsystem.getDistanceRotated(), 2) - Math.pow(0.83, 2) - Math.pow(0.91, 2)) / (-2 * 0.83 * 0.91)));
+        if (m_currentAngleRotated < Math.abs(m_elevatorRotationAngle)) {
             return false;
         }
         return true;

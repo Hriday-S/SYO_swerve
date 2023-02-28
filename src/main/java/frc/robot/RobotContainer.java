@@ -37,7 +37,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
-  private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+  //private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
   private final Joystick m_driveController = new Joystick(0);
   private final Joystick m_operatorController = new Joystick(1);
@@ -103,14 +103,7 @@ public class RobotContainer {
     );
     */
     return new SequentialCommandGroup(
-        new ParallelCommandGroup(
-            new ExtensionElevatorCommand(m_elevatorSubsystem, 0.25, 0.5),
-            new RotationElevatorCommand(m_elevatorSubsystem, 30, 0.5)
-        ),
-        new ParallelCommandGroup(
-          new ExtensionElevatorCommand(m_elevatorSubsystem, -0.25, 0.5),
-          new RotationElevatorCommand(m_elevatorSubsystem, -30, 0.5)
-        )
+        new RotationElevatorCommand(m_elevatorSubsystem, 15, 0.3)
     );
     /*
     return new SequentialCommandGroup(
@@ -143,12 +136,12 @@ public class RobotContainer {
     m_brake.whenReleased(() -> setIdleMode(1));
 
     // Operator 'A' button opens intake
-    Button m_openIntake = new Button(() -> m_operatorController.getRawButton(1));
-    m_openIntake.whenPressed(new OpenIntakeCommand(m_intakeSubsystem));
+    //Button m_openIntake = new Button(() -> m_operatorController.getRawButton(1));
+    //m_openIntake.whenPressed(new OpenIntakeCommand(m_intakeSubsystem));
 
     // Operator 'X' button closes intake
-    Button m_closeIntake = new Button(() -> m_operatorController.getRawButton(2));
-    m_closeIntake.whenPressed(new CloseIntakeCommand(m_intakeSubsystem));
+    //Button m_closeIntake = new Button(() -> m_operatorController.getRawButton(2));
+    //m_closeIntake.whenPressed(new CloseIntakeCommand(m_intakeSubsystem));
 
     // Driver bottom-left base button changes camera view
     Button m_driveView = new Button(() -> m_driveController.getRawButton(11));
