@@ -56,6 +56,7 @@ public class RobotContainer {
     // Left stick Y axis -> forward and backwards movement
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
+    
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
             () -> -modifyAxis(m_driveController.getRawAxis(1), 0.1, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
@@ -65,8 +66,8 @@ public class RobotContainer {
 
     m_elevatorSubsystem.setDefaultCommand(new DefaultElevatorCommand(
             m_elevatorSubsystem, 
-            -m_operatorController.getRawAxis(1), 
-            -m_operatorController.getRawAxis(5)
+            () -> -m_operatorController.getRawAxis(1), 
+            () -> -m_operatorController.getRawAxis(5)
     ));
 
     m_driveCamera = CameraServer.startAutomaticCapture(0);
@@ -81,6 +82,7 @@ public class RobotContainer {
   }
 
   public void reset() {
+    m_elevatorSubsystem.resetEncoders();
     m_drivetrainSubsystem.zeroGyroscope();
     m_drivetrainSubsystem.updateDistance();
     m_elevatorSubsystem.updatePositions();
@@ -103,7 +105,7 @@ public class RobotContainer {
     );
     */
     return new SequentialCommandGroup(
-        new RotationElevatorCommand(m_elevatorSubsystem, 15, 0.3)
+        new RotationElevatorCommand(m_elevatorSubsystem, 15, 0.1)
     );
     /*
     return new SequentialCommandGroup(

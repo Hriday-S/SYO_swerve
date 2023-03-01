@@ -49,12 +49,26 @@ public class ElevatorSubsystem extends SubsystemBase {
         m_winchPosition = m_winchEncoder.getPosition();
     }
 
+    public double getElevatorAbsPosition() {
+        return m_elevatorPulleyEncoder.getPosition();
+    }
+
+    public double getWinchAbsPosition() {
+        return m_winchEncoder.getPosition();
+    }
+
     public double getDistanceTravelled() {
         return Math.abs(m_elevatorPulleyEncoder.getPosition() - m_elevatorPulleyPosition);
     }
 
     public double getDistanceRotated() {
         return Math.abs(m_winchEncoder.getPosition() - m_winchPosition);
+    }
+
+    // Only resets when a match starts
+    public void resetEncoders() {
+        m_elevatorPulleyEncoder.setPosition(0);
+        m_winchEncoder.setPosition(0);
     }
 
     @Override

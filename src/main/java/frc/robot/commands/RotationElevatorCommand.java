@@ -24,8 +24,7 @@ public class RotationElevatorCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        double m_currentAngleRotated = Math.toDegrees(Math.acos((Math.pow(m_elevatorSubsystem.getDistanceRotated(), 2) - Math.pow(0.83, 2) - Math.pow(0.91, 2)) / (-2 * 0.83 * 0.91)));
-        if (m_currentAngleRotated < Math.abs(m_elevatorRotationAngle)) {
+        if (calculateTheta() < Math.abs(m_elevatorRotationAngle)) {
             return false;
         }
         return true;
@@ -35,5 +34,16 @@ public class RotationElevatorCommand extends CommandBase {
     public void end(boolean interrupted) {
         m_elevatorSubsystem.rotate(0);
         m_elevatorSubsystem.updatePositions();
+    }
+
+    public double calculateTheta() {
+        double theta = Math.pow(0.83, 2) + Math.pow(0.91, 2) - Math.pow(m_elevatorSubsystem.getDistanceRotated(), 2);
+        theta /= (2 * 0.83 * 0.91);
+        if (theta > 1) {
+            theta = 1;
+        } 
+        else {}
+        theta = Math.acos(theta);
+        return Math.toDegrees(theta);
     }
 }
