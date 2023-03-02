@@ -15,7 +15,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.TranslationDriveCommand;
 import frc.robot.commands.WinchPositionCommand;
 import frc.robot.commands.RotationDriveCommand;
-import frc.robot.commands.IdleCommand;
+import frc.robot.commands.IdleDriveCommand;
 import frc.robot.commands.OpenIntakeCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.commands.DefaultElevatorCommand;

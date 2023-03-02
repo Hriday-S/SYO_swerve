@@ -13,8 +13,12 @@ public class CloseIntakeCommand extends CommandBase {
     }
 
     @Override
-    public void execute() {
+    public void initialize() {
         m_intakeSubsystem.close();
-        end(false);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true;
     }
 }

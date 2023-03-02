@@ -13,8 +13,12 @@ public class OpenIntakeCommand extends CommandBase {
     }
 
     @Override
-    public void execute() {
+    public void initialize() {
         m_intakeSubsystem.open();
-        end(false);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true;
     }
 }
