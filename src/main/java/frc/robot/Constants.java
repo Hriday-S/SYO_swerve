@@ -33,13 +33,13 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 50; 
     public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(57.9); 
 
-    public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 8; // 
-    public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 16; // 
-    public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 53; // 
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(15.3); // 
+    public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 8; 
+    public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 16; 
+    public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 53; 
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(15.3); 
        
-    public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 17; // 
-    public static final int BACK_LEFT_MODULE_STEER_MOTOR = 6; // 
+    public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 17; 
+    public static final int BACK_LEFT_MODULE_STEER_MOTOR = 6; 
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 51; 
     public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(12.8+180); 
 
@@ -48,8 +48,8 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 52; 
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(34.3+180); 
 
-    public static final int ELEVATOR_PULLEY_MOTOR = 60; // FIXME Set elevator pulley motor ID
-    public static final int WINCH_MOTOR = 61; // FIXME Set winch motor ID
+    public static final int ELEVATOR_PULLEY_MOTOR = 60; 
+    public static final int WINCH_MOTOR = 61; 
 
     public static final int INTAKE_MOTOR_1 = 71; // FIXME Set first intake motor ID
     public static final int INTAKE_MOTOR_2 = 72; // FIXME Set second intake motor ID

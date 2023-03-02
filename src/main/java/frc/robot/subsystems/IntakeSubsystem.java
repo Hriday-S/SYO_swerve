@@ -27,12 +27,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public IntakeSubsystem() {
         m_claw = new DoubleSolenoid(PneumaticsModuleType.REVPH, CLAW_SOLENOID_FORWARD, CLAW_SOLENOID_REVERSE);
+        m_release = new Solenoid(PneumaticsModuleType.REVPH, RELEASE_SOLENOID);
 
         m_intake1 = new CANSparkMax(INTAKE_MOTOR_1, MotorType.kBrushed);
         m_intake2 = new CANSparkMax(INTAKE_MOTOR_2, MotorType.kBrushed);
-        m_intake2.setInverted(true);
         m_intake = new MotorControllerGroup(m_intake1, m_intake2);
-        m_release = new Solenoid(PneumaticsModuleType.REVPH, RELEASE_SOLENOID);
     }
 
     public void close() {

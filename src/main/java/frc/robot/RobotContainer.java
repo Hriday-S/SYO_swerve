@@ -89,10 +89,6 @@ public class RobotContainer {
     m_drivetrainSubsystem.updateDistance();
   }
 
-  public void setIdleMode(int mode) {
-    m_drivetrainSubsystem.setIdleMode(mode);
-  }
-
   public SequentialCommandGroup autonomousCommands() {
     /*
     return new SequentialCommandGroup(
@@ -128,12 +124,12 @@ public class RobotContainer {
     Button m_resetGyro = new Button(() -> m_driveController.getRawButton(3));
     m_resetGyro.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
 
-    // Holding down driver trigger activates turbo speed
+    // Driver holding down driver trigger activates turbo speed
     Button m_turbo = new Button(() -> m_driveController.getRawButton(1));
     m_turbo.whenPressed(() -> setTurbo(1.0));
     m_turbo.whenReleased(() -> setTurbo(0.5));
 
-    // Holding down side thumb button activates hard brakes
+    // Driver holding down side thumb button activates hard brakes
     Button m_brake = new Button(() -> m_driveController.getRawButton(2));
     m_brake.whenPressed(() -> setIdleMode(0));
     m_brake.whenReleased(() -> setIdleMode(1));
@@ -184,5 +180,9 @@ public class RobotContainer {
   private static void setTurbo(double power) 
   {
     m_drivePowerCap = power;
+  }
+
+  public void setIdleMode(int mode) {
+    m_drivetrainSubsystem.setIdleMode(mode);
   }
 }
