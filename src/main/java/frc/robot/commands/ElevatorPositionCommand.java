@@ -3,23 +3,27 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ElevatorSubsystem;
 
-public class ExtensionElevatorCommand extends CommandBase {
+public class ElevatorPositionCommand extends CommandBase {
     private final ElevatorSubsystem m_elevatorSubsystem;
 
-    private final double m_elevatorPulleyDistance;
-    private double m_startingDistance;
+    private double m_startPosition;
+    private double m_targetPosition;
     private final double m_power;
 
-    public ExtensionElevatorCommand(ElevatorSubsystem elevatorSubsystem, double elevatorPulleyDistance, double power) {
+    public ElevatorPositionCommand(ElevatorSubsystem elevatorSubsystem, String position, double power) {
         m_elevatorSubsystem = elevatorSubsystem;
-        m_elevatorPulleyDistance = elevatorPulleyDistance;
+        if (position.equals("OUT")) {
+            m_targetPosition = 1.1;
+        } else if (position.equals("IN")) {
+            m_targetPosition = 0;
+        }
         m_power = power;
 
         addRequirements(elevatorSubsystem);
     }
 
     public void init() {
-        m_startingDistance = m_elevatorSubsystem.getElevatorAbsPosition();
+        m_startPosition = m_elevatorSubsystem.getElevatorAbsPosition();
     }
 
     int i = 1;
@@ -29,13 +33,12 @@ public class ExtensionElevatorCommand extends CommandBase {
             init();
             i++;
         }
-
-        m_elevatorSubsystem.extend(Math.copySign(m_power, m_elevatorPulleyDistance));
+        m_elevatorSubsystem.extend(Math.copySign(m_power, m_targetPosition - m_startPosition));
     }
 
     @Override
     public boolean isFinished() {
-        if (Math.abs(m_elevatorSubsystem.getElevatorAbsPosition() - m_startingDistance) < Math.abs(m_elevatorPulleyDistance)) {
+        if (Math.abs(m_elevatorSubsystem.getElevatorAbsPosition() - m_startPosition) < Math.abs(m_targetPosition - m_startPosition)) {
             return false;
         }
         return true;

@@ -19,12 +19,12 @@ public class RotationElevatorCommand extends CommandBase {
     }
 
     public void init() {
-        m_startingAngle = calculateTheta(m_elevatorSubsystem.getWinchAbsPosition());
+        m_startingAngle = m_elevatorSubsystem.getWinchAbsPosition();
     }
 
+    int i = 1;
     @Override
     public void execute() {
-        int i = 1;
         if (i == 1) {
             init();
             i++;
@@ -35,7 +35,7 @@ public class RotationElevatorCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (calculateTheta(m_elevatorSubsystem.getDistanceRotated()) - m_startingAngle < Math.abs(m_elevatorRotationAngle)) {
+        if (Math.abs(m_elevatorSubsystem.getWinchAbsPosition() - m_startingAngle) < Math.abs(m_elevatorRotationAngle)) {
             return false;
         }
         return true;
@@ -44,17 +44,5 @@ public class RotationElevatorCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         m_elevatorSubsystem.rotate(0);
-        m_elevatorSubsystem.updatePositions();
-    }
-
-    public double calculateTheta(double distance) {
-        double theta = Math.pow(0.83, 2) + Math.pow(0.91, 2) - Math.pow(distance, 2);
-        theta /= (2 * 0.83 * 0.91);
-        if (theta > 1) {
-            theta = 1;
-        } 
-        else {}
-        theta = Math.acos(theta);
-        return Math.toDegrees(theta);
     }
 }

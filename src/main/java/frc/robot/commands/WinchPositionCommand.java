@@ -3,23 +3,23 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ElevatorSubsystem;
 
-public class ExtensionElevatorCommand extends CommandBase {
+public class WinchPositionCommand extends CommandBase {
     private final ElevatorSubsystem m_elevatorSubsystem;
 
-    private final double m_elevatorPulleyDistance;
-    private double m_startingDistance;
+    private double m_startAngle;
+    private final double m_targetAngle;
     private final double m_power;
 
-    public ExtensionElevatorCommand(ElevatorSubsystem elevatorSubsystem, double elevatorPulleyDistance, double power) {
+    public WinchPositionCommand(ElevatorSubsystem elevatorSubsystem, double power) {
         m_elevatorSubsystem = elevatorSubsystem;
-        m_elevatorPulleyDistance = elevatorPulleyDistance;
+        m_targetAngle = 53;
         m_power = power;
 
         addRequirements(elevatorSubsystem);
     }
 
     public void init() {
-        m_startingDistance = m_elevatorSubsystem.getElevatorAbsPosition();
+        m_startAngle = m_elevatorSubsystem.getWinchAbsPosition();
     }
 
     int i = 1;
@@ -29,13 +29,12 @@ public class ExtensionElevatorCommand extends CommandBase {
             init();
             i++;
         }
-
-        m_elevatorSubsystem.extend(Math.copySign(m_power, m_elevatorPulleyDistance));
+        m_elevatorSubsystem.rotate(Math.copySign(m_power, m_targetAngle - m_startAngle));
     }
 
     @Override
     public boolean isFinished() {
-        if (Math.abs(m_elevatorSubsystem.getElevatorAbsPosition() - m_startingDistance) < Math.abs(m_elevatorPulleyDistance)) {
+        if (Math.abs(m_elevatorSubsystem.getWinchAbsPosition() - m_startAngle) < Math.abs(m_targetAngle - m_startAngle)) {
             return false;
         }
         return true;
@@ -43,6 +42,6 @@ public class ExtensionElevatorCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        m_elevatorSubsystem.extend(0);
+        m_elevatorSubsystem.rotate(0);
     }
 }

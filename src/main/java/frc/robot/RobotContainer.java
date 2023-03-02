@@ -13,11 +13,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.CloseIntakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.TranslationDriveCommand;
+import frc.robot.commands.WinchPositionCommand;
 import frc.robot.commands.RotationDriveCommand;
 import frc.robot.commands.IdleCommand;
 import frc.robot.commands.OpenIntakeCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.commands.DefaultElevatorCommand;
+import frc.robot.commands.ElevatorPositionCommand;
 import frc.robot.commands.ExtensionElevatorCommand;
 import frc.robot.commands.RotationElevatorCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -85,7 +87,6 @@ public class RobotContainer {
     m_elevatorSubsystem.resetEncoders();
     m_drivetrainSubsystem.zeroGyroscope();
     m_drivetrainSubsystem.updateDistance();
-    m_elevatorSubsystem.updatePositions();
   }
 
   public void setIdleMode(int mode) {
@@ -105,7 +106,7 @@ public class RobotContainer {
     );
     */
     return new SequentialCommandGroup(
-        new RotationElevatorCommand(m_elevatorSubsystem, 15, 0.1)
+        new RotationElevatorCommand(m_elevatorSubsystem, -15, 0.1)
     );
     /*
     return new SequentialCommandGroup(
@@ -137,13 +138,17 @@ public class RobotContainer {
     m_brake.whenPressed(() -> setIdleMode(0));
     m_brake.whenReleased(() -> setIdleMode(1));
 
-    // Operator 'A' button opens intake
-    //Button m_openIntake = new Button(() -> m_operatorController.getRawButton(1));
-    //m_openIntake.whenPressed(new OpenIntakeCommand(m_intakeSubsystem));
+    // Operator 'A' button sets elevator to intake position
+    Button m_intakePosition = new Button(() -> m_operatorController.getRawButton(1));
+    m_intakePosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "IN", 0.2));
 
-    // Operator 'X' button closes intake
-    //Button m_closeIntake = new Button(() -> m_operatorController.getRawButton(2));
-    //m_closeIntake.whenPressed(new CloseIntakeCommand(m_intakeSubsystem));
+    // Operator 'X' button sets elevator to outtake position
+    Button m_outtakePosition = new Button(() -> m_operatorController.getRawButton(2));
+    m_outtakePosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "OUT", 0.2));
+
+    // Operator 'B' button sets winch to outtake position
+    Button m_outtakeAngle = new Button(() -> m_operatorController.getRawButton(3));
+    m_outtakeAngle.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, 0.5));
 
     // Driver bottom-left base button changes camera view
     Button m_driveView = new Button(() -> m_driveController.getRawButton(11));
