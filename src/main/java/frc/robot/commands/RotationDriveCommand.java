@@ -17,10 +17,10 @@ public class RotationDriveCommand extends CommandBase {
 
     public RotationDriveCommand(DrivetrainSubsystem drivetrainSubsystem,
                                double angle, 
-                               double power) {
+                               double avelocity) {
         this.m_drivetrainSubsystem = drivetrainSubsystem;
         this.m_arcLength = (Math.abs(angle) / 360.0) * Math.PI * Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS, DRIVETRAIN_WHEELBASE_METERS);
-        this.m_rotationSupplier = () -> Math.copySign(1, angle) * power * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+        this.m_rotationSupplier = () -> Math.copySign(1, angle) * avelocity;
 
         addRequirements(drivetrainSubsystem);
     }

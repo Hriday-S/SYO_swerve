@@ -4,7 +4,8 @@ import static frc.robot.Constants.INTAKE_MOTOR_1;
 import static frc.robot.Constants.INTAKE_MOTOR_2;
 import static frc.robot.Constants.CLAW_SOLENOID_FORWARD;
 import static frc.robot.Constants.CLAW_SOLENOID_REVERSE;
-import static frc.robot.Constants.RELEASE_SOLENOID;
+import static frc.robot.Constants.RELEASE_SOLENOID_1;
+import static frc.robot.Constants.RELEASE_SOLENOID_2;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -23,11 +24,13 @@ public class IntakeSubsystem extends SubsystemBase {
     private CANSparkMax m_intake1;
     private CANSparkMax m_intake2;
     private MotorControllerGroup m_intake;
-    private Solenoid m_release;
+    private Solenoid m_release1;
+    private Solenoid m_release2;
 
     public IntakeSubsystem() {
         m_claw = new DoubleSolenoid(PneumaticsModuleType.REVPH, CLAW_SOLENOID_FORWARD, CLAW_SOLENOID_REVERSE);
-        m_release = new Solenoid(PneumaticsModuleType.REVPH, RELEASE_SOLENOID);
+        m_release1 = new Solenoid(PneumaticsModuleType.REVPH, RELEASE_SOLENOID_1);
+        m_release2 = new Solenoid(PneumaticsModuleType.REVPH, RELEASE_SOLENOID_2);
 
         m_intake1 = new CANSparkMax(INTAKE_MOTOR_1, MotorType.kBrushed);
         m_intake2 = new CANSparkMax(INTAKE_MOTOR_2, MotorType.kBrushed);
@@ -35,14 +38,16 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void close() {
-        m_intake.set(0.3);
+        m_intake.set(0.4);
         m_claw.set(Value.kForward);
+        m_release1.set(false);
+        m_release2.set(false);
     }
 
     public void open() {
         m_intake.set(0);
-        m_release.set(true);
+        m_release1.set(true);
+        m_release2.set(true);
         m_claw.set(Value.kReverse);
-        m_release.set(false);
     }
 }

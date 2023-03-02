@@ -39,7 +39,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
-  //private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+  private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
   private final Joystick m_driveController = new Joystick(0);
   private final Joystick m_operatorController = new Joystick(1);
@@ -92,25 +92,24 @@ public class RobotContainer {
   public SequentialCommandGroup autonomousCommands() {
     /*
     return new SequentialCommandGroup(
-        new TranslationDriveCommand(m_drivetrainSubsystem, 0.5, 0.5, 0.25),
+        new TranslationDriveCommand(m_drivetrainSubsystem, 0.5, 0.5, 1),
         new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new TranslationDriveCommand(m_drivetrainSubsystem, -0.5, 0.5, 0.25),
+        new TranslationDriveCommand(m_drivetrainSubsystem, -0.5, 0.5, 1),
         new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new TranslationDriveCommand(m_drivetrainSubsystem, -0.5, -0.5, 0.25),
+        new TranslationDriveCommand(m_drivetrainSubsystem, -0.5, -0.5, 1),
         new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new TranslationDriveCommand(m_drivetrainSubsystem, 0.5, -0.5, 0.25)
+        new TranslationDriveCommand(m_drivetrainSubsystem, 0.5, -0.5, 1)
     );
-    */
+    
     return new SequentialCommandGroup(
         new RotationElevatorCommand(m_elevatorSubsystem, -15, 0.1)
     );
-    /*
+    */
+    
     return new SequentialCommandGroup(
-        new OpenIntakeCommand(m_intakeSubsystem),
-        new IdleCommand(m_drivetrainSubsystem, m_elevatorSubsystem, 2500),
         new CloseIntakeCommand(m_intakeSubsystem)
     );
-    */
+    
   }
 
   /**
@@ -139,11 +138,11 @@ public class RobotContainer {
     m_intakePosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "IN", 0.2));
 
     // Operator 'X' button sets elevator to outtake position
-    Button m_outtakePosition = new Button(() -> m_operatorController.getRawButton(2));
+    Button m_outtakePosition = new Button(() -> m_operatorController.getRawButton(3));
     m_outtakePosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "OUT", 0.2));
 
     // Operator 'B' button sets winch to outtake position
-    Button m_outtakeAngle = new Button(() -> m_operatorController.getRawButton(3));
+    Button m_outtakeAngle = new Button(() -> m_operatorController.getRawButton(2));
     m_outtakeAngle.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, 0.5));
 
     // Driver bottom-left base button changes camera view
@@ -153,6 +152,14 @@ public class RobotContainer {
     // Driver bottom-right base button changes camera view
     Button m_subsystemView = new Button(() -> m_driveController.getRawButton(12));
     m_subsystemView.whenPressed(() -> m_cameraServer.setSource(m_subsystemCamera));
+
+    // Driver bottom-left base button changes camera view
+    Button m_openClaw = new Button(() -> m_operatorController.getRawAxis(2) > 0.5);
+    m_openClaw.whenPressed(new OpenIntakeCommand(m_intakeSubsystem));
+
+    // Driver bottom-right base button changes camera view
+    Button m_closeClaw = new Button(() -> m_operatorController.getRawAxis(3) > 0.5);
+    m_closeClaw.whenPressed(new CloseIntakeCommand(m_intakeSubsystem));
   }
 
   private static double deadband(double value, double deadband) {

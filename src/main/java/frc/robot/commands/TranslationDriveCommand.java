@@ -16,11 +16,11 @@ public class TranslationDriveCommand extends CommandBase {
     public TranslationDriveCommand(DrivetrainSubsystem drivetrainSubsystem,
                                double distanceX,
                                double distanceY, 
-                               double power) {
+                               double velocity) {
         this.m_drivetrainSubsystem = drivetrainSubsystem;
         this.m_distance = Math.hypot(distanceX, distanceY);
-        this.m_translationXSupplier = () -> (distanceX / this.m_distance) * power * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND;
-        this.m_translationYSupplier = () -> (distanceY / this.m_distance) * power * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND;
+        this.m_translationXSupplier = () -> (distanceX / this.m_distance) * velocity;
+        this.m_translationYSupplier = () -> (distanceY / this.m_distance) * velocity;
 
         addRequirements(drivetrainSubsystem);
     }
