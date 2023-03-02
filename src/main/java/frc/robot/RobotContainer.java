@@ -16,6 +16,7 @@ import frc.robot.commands.TranslationDriveCommand;
 import frc.robot.commands.WinchPositionCommand;
 import frc.robot.commands.RotationDriveCommand;
 import frc.robot.commands.IdleDriveCommand;
+import frc.robot.commands.IdleElevatorCommand;
 import frc.robot.commands.OpenIntakeCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.commands.DefaultElevatorCommand;
@@ -60,16 +61,16 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-            m_drivetrainSubsystem,
-            () -> -modifyAxis(m_driveController.getRawAxis(1), 0.1, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_driveController.getRawAxis(0), 0.1, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_driveController.getRawAxis(2), 0.4, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        m_drivetrainSubsystem,
+        () -> -modifyAxis(m_driveController.getRawAxis(1), 0.1, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxis(m_driveController.getRawAxis(0), 0.1, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxis(m_driveController.getRawAxis(2), 0.4, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
     m_elevatorSubsystem.setDefaultCommand(new DefaultElevatorCommand(
-            m_elevatorSubsystem, 
-            () -> -m_operatorController.getRawAxis(1), 
-            () -> -m_operatorController.getRawAxis(5)
+        m_elevatorSubsystem, 
+        () -> -m_operatorController.getRawAxis(1), 
+        () -> -m_operatorController.getRawAxis(5)
     ));
 
     m_driveCamera = CameraServer.startAutomaticCapture(0);

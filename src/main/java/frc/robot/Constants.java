@@ -53,8 +53,8 @@ public final class Constants {
 
     public static final int INTAKE_MOTOR_1 = 40;
     public static final int INTAKE_MOTOR_2 = 41;
-    public static final int CLAW_SOLENOID_FORWARD = 0; // FIXME Set forward claw solenoid ID
-    public static final int CLAW_SOLENOID_REVERSE = 1; // FIXME Set reverse claw solenoid ID
+    public static final int CLAW_SOLENOID_FORWARD = 0;
+    public static final int CLAW_SOLENOID_REVERSE = 1;
     public static final int RELEASE_SOLENOID_1 = 2;
     public static final int RELEASE_SOLENOID_2 = 3;
 }

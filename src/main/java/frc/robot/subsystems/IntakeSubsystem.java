@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -38,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void close() {
-        m_intake.set(0.4);
+        m_intake.set(0.6);
         m_claw.set(Value.kForward);
         m_release1.set(false);
         m_release2.set(false);
@@ -48,6 +49,10 @@ public class IntakeSubsystem extends SubsystemBase {
         m_intake.set(0);
         m_release1.set(true);
         m_release2.set(true);
+        Timer.delay(0.5);
         m_claw.set(Value.kReverse);
+        Timer.delay(0.5);
+        m_release1.set(false);
+        m_release2.set(false);
     }
 }
