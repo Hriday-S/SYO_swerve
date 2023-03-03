@@ -30,7 +30,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         m_elevatorPulleyEncoder = m_elevatorPulley.getEncoder();
         m_winchEncoder = m_winch.getEncoder();
         m_elevatorPulleyEncoder.setPositionConversionFactor(0.01); // Convert to meters
-        m_winchEncoder.setPositionConversionFactor(0.05); // Convert from motor rotations to gear rotations
+        m_winchEncoder.setPositionConversionFactor(0.015625); // Convert from motor rotations to gear rotations
     }
 
     public void extend(double elevatorPulleySpeed) {
@@ -62,7 +62,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public double calculateTheta(double distance) {
-        double theta = Math.pow(0.83, 2) + Math.pow(0.91, 2) - Math.pow(distance, 2);
+        double theta = Math.pow(0.83, 2) + Math.pow(0.88, 2) - Math.pow(distance, 2);
         theta /= (2 * 0.83 * 0.91);
         if (theta > 1) {
             theta = 1;

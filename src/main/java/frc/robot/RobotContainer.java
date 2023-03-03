@@ -108,7 +108,7 @@ public class RobotContainer {
     */
     
     return new SequentialCommandGroup(
-        new CloseIntakeCommand(m_intakeSubsystem)
+        new WinchPositionCommand(m_elevatorSubsystem, 0.2)
     );
     
   }
@@ -144,7 +144,7 @@ public class RobotContainer {
 
     // Operator 'B' button sets winch to outtake position
     Button m_outtakeAngle = new Button(() -> m_operatorController.getRawButton(2));
-    m_outtakeAngle.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, 0.5));
+    m_outtakeAngle.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, 0.2));
 
     // Driver bottom-left base button changes camera view
     Button m_driveView = new Button(() -> m_driveController.getRawButton(11));
