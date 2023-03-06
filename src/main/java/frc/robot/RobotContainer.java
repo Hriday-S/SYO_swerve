@@ -25,6 +25,9 @@ import frc.robot.commands.ExtensionElevatorCommand;
 import frc.robot.commands.RotationElevatorCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+
+import javax.lang.model.util.ElementScanner6;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
@@ -45,6 +48,7 @@ public class RobotContainer {
   private final Joystick m_driveController = new Joystick(0);
   private final Joystick m_operatorController = new Joystick(1);
   private static double m_drivePowerCap = 0.5;
+  private static double m_rotatePower = 0;
 
   private final UsbCamera m_driveCamera;
   private final UsbCamera m_subsystemCamera;
@@ -64,7 +68,7 @@ public class RobotContainer {
         m_drivetrainSubsystem,
         () -> -modifyAxis(m_driveController.getRawAxis(1), 0.1, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
         () -> -modifyAxis(m_driveController.getRawAxis(0), 0.1, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> -modifyAxis(m_driveController.getRawAxis(2), 0.4, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        () -> m_rotatePower * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
     m_elevatorSubsystem.setDefaultCommand(new DefaultElevatorCommand(
@@ -134,6 +138,10 @@ public class RobotContainer {
     m_brake.whenPressed(() -> setIdleMode(0));
     m_brake.whenReleased(() -> setIdleMode(1));
 
+    // Driver bottom-right thumpad button rotates 180 degrees
+    Button m_rotate180 = new Button(() -> m_driveController.getRawButton(4));
+    m_rotate180.whenPressed(new RotationDriveCommand(m_drivetrainSubsystem, 180, Math.PI));
+
     // Operator 'A' button sets elevator to intake position
     Button m_intakePosition = new Button(() -> m_operatorController.getRawButton(1));
     m_intakePosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "IN", 0.2));
@@ -146,21 +154,31 @@ public class RobotContainer {
     Button m_outtakeAngle = new Button(() -> m_operatorController.getRawButton(2));
     m_outtakeAngle.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, 0.2));
 
-    // Driver bottom-left base button changes camera view
-    Button m_driveView = new Button(() -> m_driveController.getRawButton(11));
+    // Driver bottom-mid-left base button changes camera view
+    Button m_driveView = new Button(() -> m_driveController.getRawButton(9));
     m_driveView.whenPressed(() -> m_cameraServer.setSource(m_driveCamera));
 
-    // Driver bottom-right base button changes camera view
-    Button m_subsystemView = new Button(() -> m_driveController.getRawButton(12));
+    // Driver bottom-mid-right base button changes camera view
+    Button m_subsystemView = new Button(() -> m_driveController.getRawButton(10));
     m_subsystemView.whenPressed(() -> m_cameraServer.setSource(m_subsystemCamera));
 
-    // Driver bottom-left base button changes camera view
+    // Operator left trigger opens claw
     Button m_openClaw = new Button(() -> m_operatorController.getRawAxis(2) > 0.5);
     m_openClaw.whenPressed(new OpenIntakeCommand(m_intakeSubsystem));
 
-    // Driver bottom-right base button changes camera view
+    // Operator right trigger closes claw
     Button m_closeClaw = new Button(() -> m_operatorController.getRawAxis(3) > 0.5);
     m_closeClaw.whenPressed(new CloseIntakeCommand(m_intakeSubsystem));
+
+    // Driver bottom-close-left base button changes camera view
+    Button m_rotateLeft = new Button(() -> m_driveController.getRawButton(11));
+    m_rotateLeft.whileHeld(() -> setRotatePower("left"));
+    m_rotateLeft.whenReleased(() -> setRotatePower("none"));
+
+    // Driver bottom-close-right base button changes camera view
+    Button m_rotateRight = new Button(() -> m_driveController.getRawButton(12));
+    m_rotateRight.whileHeld(() -> setRotatePower("right"));
+    m_rotateRight.whenReleased(() -> setRotatePower("none"));
   }
 
   private static double deadband(double value, double deadband) {
@@ -192,5 +210,17 @@ public class RobotContainer {
 
   public void setIdleMode(int mode) {
     m_drivetrainSubsystem.setIdleMode(mode);
+  }
+
+  public void setRotatePower(String state) {
+    if (state.equals("left")) {
+      m_rotatePower = 0.125;
+    }
+    else if (state.equals("right")) {
+      m_rotatePower = -0.125;
+    }
+    else {
+      m_rotatePower = 0;
+    }
   }
 }
