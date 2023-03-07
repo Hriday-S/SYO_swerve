@@ -26,8 +26,6 @@ import frc.robot.commands.RotationElevatorCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
-import javax.lang.model.util.ElementScanner6;
-
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
@@ -95,26 +93,21 @@ public class RobotContainer {
   }
 
   public SequentialCommandGroup autonomousCommands() {
-    /*
     return new SequentialCommandGroup(
-        new TranslationDriveCommand(m_drivetrainSubsystem, 0.5, 0.5, 1),
-        new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new TranslationDriveCommand(m_drivetrainSubsystem, -0.5, 0.5, 1),
-        new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new TranslationDriveCommand(m_drivetrainSubsystem, -0.5, -0.5, 1),
-        new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new TranslationDriveCommand(m_drivetrainSubsystem, 0.5, -0.5, 1)
+        new CloseIntakeCommand(m_intakeSubsystem),
+        new ParallelCommandGroup(
+            new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.2),
+            new WinchPositionCommand(m_elevatorSubsystem, "OUT", 0.2)
+        ),
+        new OpenIntakeCommand(m_intakeSubsystem),
+        new ParallelCommandGroup(
+            new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.2),
+            new WinchPositionCommand(m_elevatorSubsystem, "DRIVE", 0.2)
+        ),
+        new TranslationDriveCommand(m_drivetrainSubsystem, -1, 0, 0.5),
+        new RotationDriveCommand(m_drivetrainSubsystem, 180, Math.PI / 2),
+        new TranslationDriveCommand(m_drivetrainSubsystem, -2, 0, 0.5)
     );
-    
-    return new SequentialCommandGroup(
-        new RotationElevatorCommand(m_elevatorSubsystem, -15, 0.1)
-    );
-    */
-    
-    return new SequentialCommandGroup(
-        new WinchPositionCommand(m_elevatorSubsystem, "DRIVE", 0.2)
-    );
-    
   }
 
   /**
@@ -157,7 +150,7 @@ public class RobotContainer {
     m_highPosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.2));
     m_highPosition.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, "OUT", 0.2));
 
-    // Operator 'B' button sets winch to outtake position
+    // Operator 'B' button sets winch to drive position
     Button m_drivePosition = new Button(() -> m_operatorController.getRawButton(2));
     m_drivePosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.2));
     m_drivePosition.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, "DRIVE", 0.2));
