@@ -7,12 +7,18 @@ public class WinchPositionCommand extends CommandBase {
     private final ElevatorSubsystem m_elevatorSubsystem;
 
     private double m_startAngle;
-    private final double m_targetAngle;
+    private double m_targetAngle;
     private final double m_power;
 
-    public WinchPositionCommand(ElevatorSubsystem elevatorSubsystem, double power) {
+    public WinchPositionCommand(ElevatorSubsystem elevatorSubsystem, String position, double power) {
         m_elevatorSubsystem = elevatorSubsystem;
-        m_targetAngle = 53;
+        if (position.equals("DRIVE")) {
+            m_targetAngle = 80;
+        } else if (position.equals("OUT")) {
+            m_targetAngle = 53;
+        } else if (position.equals("IN")) {
+            m_targetAngle = 10;
+        }
         m_power = power;
 
         addRequirements(elevatorSubsystem);

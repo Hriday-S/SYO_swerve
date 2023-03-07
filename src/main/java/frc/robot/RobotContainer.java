@@ -66,15 +66,15 @@ public class RobotContainer {
     
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
         m_drivetrainSubsystem,
-        () -> -modifyAxis(m_driveController.getRawAxis(1), 0.1, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> -modifyAxis(m_driveController.getRawAxis(0), 0.1, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> m_rotatePower * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        () -> -modifyAxis(m_driveController.getRawAxis(1), 0.05, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxis(m_driveController.getRawAxis(0), 0.05, m_drivePowerCap) * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> m_rotatePower * (-m_driveController.getRawAxis(3) + 1) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
     m_elevatorSubsystem.setDefaultCommand(new DefaultElevatorCommand(
         m_elevatorSubsystem, 
-        () -> -m_operatorController.getRawAxis(1), 
-        () -> -m_operatorController.getRawAxis(5)
+        () -> -deadband(m_operatorController.getRawAxis(1), 0.05), 
+        () -> -deadband(m_operatorController.getRawAxis(5), 0.05)
     ));
 
     m_driveCamera = CameraServer.startAutomaticCapture(0);
@@ -112,7 +112,7 @@ public class RobotContainer {
     */
     
     return new SequentialCommandGroup(
-        new WinchPositionCommand(m_elevatorSubsystem, 0.2)
+        new WinchPositionCommand(m_elevatorSubsystem, "DRIVE", 0.2)
     );
     
   }
@@ -140,19 +140,27 @@ public class RobotContainer {
 
     // Driver bottom-right thumpad button rotates 180 degrees
     Button m_rotate180 = new Button(() -> m_driveController.getRawButton(4));
-    m_rotate180.whenPressed(new RotationDriveCommand(m_drivetrainSubsystem, 180, Math.PI));
+    m_rotate180.whenPressed(new RotationDriveCommand(m_drivetrainSubsystem, 180, Math.PI / 2));
 
-    // Operator 'A' button sets elevator to intake position
-    Button m_intakePosition = new Button(() -> m_operatorController.getRawButton(1));
-    m_intakePosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "IN", 0.2));
+    // Operator 'A' button sets elevator to low position
+    Button m_lowPosition = new Button(() -> m_operatorController.getRawButton(1));
+    m_lowPosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.2));
+    m_lowPosition.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, "IN", 0.2));
 
-    // Operator 'X' button sets elevator to outtake position
-    Button m_outtakePosition = new Button(() -> m_operatorController.getRawButton(3));
-    m_outtakePosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "OUT", 0.2));
+    // Operator 'X' button sets elevator to mid position
+    Button m_midPosition = new Button(() -> m_operatorController.getRawButton(3));
+    m_midPosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "MID", 0.2));
+    m_midPosition.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, "OUT", 0.2));
+
+    // Operator 'Y' button sets elevator to high position
+    Button m_highPosition = new Button(() -> m_operatorController.getRawButton(4));
+    m_highPosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.2));
+    m_highPosition.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, "OUT", 0.2));
 
     // Operator 'B' button sets winch to outtake position
-    Button m_outtakeAngle = new Button(() -> m_operatorController.getRawButton(2));
-    m_outtakeAngle.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, 0.2));
+    Button m_drivePosition = new Button(() -> m_operatorController.getRawButton(2));
+    m_drivePosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.2));
+    m_drivePosition.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, "DRIVE", 0.2));
 
     // Driver bottom-mid-left base button changes camera view
     Button m_driveView = new Button(() -> m_driveController.getRawButton(9));
@@ -214,10 +222,10 @@ public class RobotContainer {
 
   public void setRotatePower(String state) {
     if (state.equals("left")) {
-      m_rotatePower = 0.125;
+      m_rotatePower = 0.15;
     }
     else if (state.equals("right")) {
-      m_rotatePower = -0.125;
+      m_rotatePower = -0.15;
     }
     else {
       m_rotatePower = 0;

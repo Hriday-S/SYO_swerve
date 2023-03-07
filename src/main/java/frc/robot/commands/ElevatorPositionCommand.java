@@ -12,9 +12,11 @@ public class ElevatorPositionCommand extends CommandBase {
 
     public ElevatorPositionCommand(ElevatorSubsystem elevatorSubsystem, String position, double power) {
         m_elevatorSubsystem = elevatorSubsystem;
-        if (position.equals("OUT")) {
-            m_targetPosition = 1.1;
-        } else if (position.equals("IN")) {
+        if (position.equals("HIGH")) {
+            m_targetPosition = 1;
+        } else if (position.equals("MID")) {
+            m_targetPosition = 0.5;
+        } else if (position.equals("LOW")) {
             m_targetPosition = 0;
         }
         m_power = power;

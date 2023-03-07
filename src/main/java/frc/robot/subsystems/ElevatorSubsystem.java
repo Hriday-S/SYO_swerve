@@ -46,7 +46,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public double getWinchAbsPosition() {
-        return 90 - calculateTheta(m_winchEncoder.getPosition() * Math.PI * calculateDiameter());
+        return 80 - calculateTheta(m_winchEncoder.getPosition() * Math.PI * calculateDiameter());
     }
 
     // Only resets when a match starts
@@ -62,7 +62,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public double calculateTheta(double distance) {
-        double theta = Math.pow(0.83, 2) + Math.pow(0.88, 2) - Math.pow(distance, 2);
+        double theta = Math.pow(0.8, 2) + Math.pow(0.58, 2) - Math.pow(distance, 2);
         theta /= (2 * 0.83 * 0.91);
         if (theta > 1) {
             theta = 1;
@@ -73,6 +73,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public double calculateDiameter() {
-        return 0.043 - (0.0018 * m_winchEncoder.getPosition());
+        return 0.04 - (0.0018 * m_winchEncoder.getPosition());
     }
 }
