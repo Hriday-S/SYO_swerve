@@ -16,7 +16,6 @@ import frc.robot.commands.TranslationDriveCommand;
 import frc.robot.commands.WinchPositionCommand;
 import frc.robot.commands.RotationDriveCommand;
 import frc.robot.commands.IdleDriveCommand;
-import frc.robot.commands.IdleElevatorCommand;
 import frc.robot.commands.OpenIntakeCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.commands.DefaultElevatorCommand;
@@ -25,7 +24,7 @@ import frc.robot.commands.ExtensionElevatorCommand;
 import frc.robot.commands.RotationElevatorCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-
+import frc.robot.subsystems.WinchSubsystem;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
@@ -41,6 +40,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
+  private final WinchSubsystem m_winchSubsystem = new WinchSubsystem();
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
   private final Joystick m_driveController = new Joystick(0);
@@ -70,7 +70,8 @@ public class RobotContainer {
     ));
 
     m_elevatorSubsystem.setDefaultCommand(new DefaultElevatorCommand(
-        m_elevatorSubsystem, 
+        m_elevatorSubsystem,
+        m_winchSubsystem, 
         () -> -deadband(m_operatorController.getRawAxis(1), 0.05), 
         () -> -deadband(m_operatorController.getRawAxis(5), 0.05)
     ));
@@ -97,12 +98,12 @@ public class RobotContainer {
         new CloseIntakeCommand(m_intakeSubsystem),
         new ParallelCommandGroup(
             new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.2),
-            new WinchPositionCommand(m_elevatorSubsystem, "OUT", 0.2)
+            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.2)
         ),
         new OpenIntakeCommand(m_intakeSubsystem),
         new ParallelCommandGroup(
             new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.2),
-            new WinchPositionCommand(m_elevatorSubsystem, "DRIVE", 0.2)
+            new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.2)
         ),
         new TranslationDriveCommand(m_drivetrainSubsystem, -1, 0, 0.5),
         new RotationDriveCommand(m_drivetrainSubsystem, 180, Math.PI / 2),
@@ -137,23 +138,19 @@ public class RobotContainer {
 
     // Operator 'A' button sets elevator to low position
     Button m_lowPosition = new Button(() -> m_operatorController.getRawButton(1));
-    m_lowPosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.2));
-    m_lowPosition.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, "IN", 0.2));
+    m_lowPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.2), new WinchPositionCommand(m_winchSubsystem, "IN", 0.2)));
 
     // Operator 'X' button sets elevator to mid position
     Button m_midPosition = new Button(() -> m_operatorController.getRawButton(3));
-    m_midPosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "MID", 0.2));
-    m_midPosition.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, "OUT", 0.2));
+    m_midPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "MID", 0.2), new WinchPositionCommand(m_winchSubsystem, "OUT", 0.2)));
 
     // Operator 'Y' button sets elevator to high position
     Button m_highPosition = new Button(() -> m_operatorController.getRawButton(4));
-    m_highPosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.2));
-    m_highPosition.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, "OUT", 0.2));
+    m_highPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.2), new WinchPositionCommand(m_winchSubsystem, "OUT", 0.2)));
 
     // Operator 'B' button sets winch to drive position
     Button m_drivePosition = new Button(() -> m_operatorController.getRawButton(2));
-    m_drivePosition.whenPressed(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.2));
-    m_drivePosition.whenPressed(new WinchPositionCommand(m_elevatorSubsystem, "DRIVE", 0.2));
+    m_drivePosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.2), new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.2)));
 
     // Driver bottom-mid-left base button changes camera view
     Button m_driveView = new Button(() -> m_driveController.getRawButton(9));

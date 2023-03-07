@@ -50,10 +50,11 @@ public final class Constants {
 
     public static final int ELEVATOR_PULLEY_MOTOR = 60; 
     public static final int WINCH_MOTOR = 61; 
+    public static final int WINCH_ENCODER = 0; // FIXME Set winch through-bore encoder
 
     public static final int INTAKE_MOTOR_1 = 40;
     public static final int INTAKE_MOTOR_2 = 41;
-    public static final int CLAW_SOLENOID_FORWARD = 4;
+    public static final int CLAW_SOLENOID_FORWARD = 0;
     public static final int CLAW_SOLENOID_REVERSE = 1;
     public static final int RELEASE_SOLENOID_1 = 2;
     public static final int RELEASE_SOLENOID_2 = 3;

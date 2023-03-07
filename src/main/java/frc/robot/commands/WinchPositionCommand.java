@@ -1,19 +1,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.WinchSubsystem;
 
 public class WinchPositionCommand extends CommandBase {
-    private final ElevatorSubsystem m_elevatorSubsystem;
+    private final WinchSubsystem m_winchSubsystem;
 
     private double m_startAngle;
     private double m_targetAngle;
     private final double m_power;
 
-    public WinchPositionCommand(ElevatorSubsystem elevatorSubsystem, String position, double power) {
-        m_elevatorSubsystem = elevatorSubsystem;
+    public WinchPositionCommand(WinchSubsystem winchSubsystem, String position, double power) {
+        m_winchSubsystem = winchSubsystem;
         if (position.equals("DRIVE")) {
-            m_targetAngle = 80;
+            m_targetAngle = 85;
         } else if (position.equals("OUT")) {
             m_targetAngle = 53;
         } else if (position.equals("IN")) {
@@ -21,18 +21,18 @@ public class WinchPositionCommand extends CommandBase {
         }
         m_power = power;
 
-        addRequirements(elevatorSubsystem);
+        addRequirements(winchSubsystem);
     }
 
     @Override
     public void initialize() {
-        m_startAngle = m_elevatorSubsystem.getWinchAbsPosition();
-        m_elevatorSubsystem.rotate(Math.copySign(m_power, -(m_targetAngle - m_startAngle)));
+        m_startAngle = m_winchSubsystem.getWinchAbsPosition();
+        m_winchSubsystem.rotate(Math.copySign(m_power, -(m_targetAngle - m_startAngle)));
     }
 
     @Override
     public boolean isFinished() {
-        if (Math.abs(m_elevatorSubsystem.getWinchAbsPosition() - m_startAngle) < Math.abs(m_targetAngle - m_startAngle)) {
+        if (Math.abs(m_winchSubsystem.getWinchAbsPosition() - m_startAngle) < Math.abs(m_targetAngle - m_startAngle)) {
             return false;
         }
         return true;
@@ -40,6 +40,6 @@ public class WinchPositionCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        m_elevatorSubsystem.rotate(0);
+        m_winchSubsystem.rotate(0);
     }
 }
