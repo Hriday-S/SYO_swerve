@@ -49,8 +49,7 @@ public final class Constants {
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(34.3+180); 
 
     public static final int ELEVATOR_PULLEY_MOTOR = 60; 
-    public static final int WINCH_MOTOR = 61; 
-    public static final int WINCH_ENCODER = 0; // FIXME Set winch through-bore encoder
+    public static final int WINCH_MOTOR = 61;
 
     public static final int INTAKE_MOTOR_1 = 40;
     public static final int INTAKE_MOTOR_2 = 41;

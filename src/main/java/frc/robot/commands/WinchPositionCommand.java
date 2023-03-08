@@ -13,7 +13,7 @@ public class WinchPositionCommand extends CommandBase {
     public WinchPositionCommand(WinchSubsystem winchSubsystem, String position, double power) {
         m_winchSubsystem = winchSubsystem;
         if (position.equals("DRIVE")) {
-            m_targetAngle = 85;
+            m_targetAngle = 70;
         } else if (position.equals("OUT")) {
             m_targetAngle = 53;
         } else if (position.equals("IN")) {

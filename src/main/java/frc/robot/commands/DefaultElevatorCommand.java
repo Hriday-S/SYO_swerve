@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.WinchSubsystem;
@@ -26,6 +27,7 @@ public class DefaultElevatorCommand extends CommandBase {
     public void execute() {
         m_elevatorSubsystem.extend(m_elevatorPulleySpeed.getAsDouble());
         m_winchSubsystem.rotate(m_winchSpeed.getAsDouble());
+        SmartDashboard.putNumber("Winch Position", m_winchSubsystem.getWinchAbsPosition());
     }
 
     @Override
