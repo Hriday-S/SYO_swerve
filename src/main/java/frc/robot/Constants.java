@@ -50,6 +50,7 @@ public final class Constants {
 
     public static final int ELEVATOR_PULLEY_MOTOR = 60; 
     public static final int WINCH_MOTOR = 61;
+    public static final int WINCH_ENCODER = 0;
 
     public static final int INTAKE_MOTOR_1 = 40;
     public static final int INTAKE_MOTOR_2 = 41;

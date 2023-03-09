@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     CommandScheduler.getInstance().cancelAll();
 
-    m_container.reset();
+    m_container.reset(1);
     m_container.setIdleMode(0);
 
     m_container.autonomousCommands().schedule();
@@ -63,7 +63,6 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     CommandScheduler.getInstance().cancelAll();
     
-    m_container.reset();
     m_container.setIdleMode(1);
   }
 

@@ -87,11 +87,13 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
-  public void reset() {
+  public void reset(int mode) {
     m_elevatorSubsystem.resetEncoders();
     m_winchSubsystem.resetEncoders();
-    m_drivetrainSubsystem.zeroGyroscope();
-    m_drivetrainSubsystem.updateDistance();
+    if (mode == 1) {
+      m_drivetrainSubsystem.zeroGyroscope();
+      m_drivetrainSubsystem.updateDistance();
+    }
   }
 
   public SequentialCommandGroup autonomousCommands() {
@@ -123,6 +125,10 @@ public class RobotContainer {
     Button m_resetGyro = new Button(() -> m_driveController.getRawButton(3));
     m_resetGyro.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
 
+    // Driver bottom-right thumbpad button zeroes subsystems
+    Button m_resetElevator = new Button(() -> m_driveController.getRawButton(4));
+    m_resetElevator.whenPressed(() -> reset(0));
+
     // Driver holding down driver trigger activates turbo speed
     Button m_turbo = new Button(() -> m_driveController.getRawButton(1));
     m_turbo.whenPressed(() -> setTurbo(1.0));
@@ -133,32 +139,32 @@ public class RobotContainer {
     m_brake.whenPressed(() -> setIdleMode(0));
     m_brake.whenReleased(() -> setIdleMode(1));
 
-    // Driver bottom-right thumpad button rotates 180 degrees
-    Button m_rotate180 = new Button(() -> m_driveController.getRawButton(4));
+    // Driver bottom-mid-left base button rotates 180 degrees
+    Button m_rotate180 = new Button(() -> m_driveController.getRawButton(9));
     m_rotate180.whenPressed(new RotationDriveCommand(m_drivetrainSubsystem, 180, Math.PI / 2));
 
     // Operator 'A' button sets elevator to low position
     Button m_lowPosition = new Button(() -> m_operatorController.getRawButton(1));
-    m_lowPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.4)/*, new WinchPositionCommand(m_winchSubsystem, "IN", 0.2)*/));
+    m_lowPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.4), new WinchPositionCommand(m_winchSubsystem, "IN", 0.2)));
 
     // Operator 'X' button sets elevator to mid position
     Button m_midPosition = new Button(() -> m_operatorController.getRawButton(3));
-    m_midPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "MID", 0.4)/*, new WinchPositionCommand(m_winchSubsystem, "OUT", 0.2)*/));
+    m_midPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "MID", 0.4), new WinchPositionCommand(m_winchSubsystem, "OUT", 0.2)));
 
     // Operator 'Y' button sets elevator to high position
     Button m_highPosition = new Button(() -> m_operatorController.getRawButton(4));
-    m_highPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.4)/*, new WinchPositionCommand(m_winchSubsystem, "OUT", 0.2)*/));
+    m_highPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.4), new WinchPositionCommand(m_winchSubsystem, "OUT", 0.2)));
 
     // Operator 'B' button sets winch to drive position
     Button m_drivePosition = new Button(() -> m_operatorController.getRawButton(2));
-    m_drivePosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.4)/*, new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.2)*/));
+    m_drivePosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.4), new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.2)));
 
-    // Driver bottom-mid-left base button changes camera view
-    Button m_driveView = new Button(() -> m_driveController.getRawButton(9));
+    // Driver bottom-far-left base button changes camera view
+    Button m_driveView = new Button(() -> m_driveController.getRawButton(7));
     m_driveView.whenPressed(() -> m_cameraServer.setSource(m_driveCamera));
 
-    // Driver bottom-mid-right base button changes camera view
-    Button m_subsystemView = new Button(() -> m_driveController.getRawButton(10));
+    // Driver bottom-far-right base button changes camera view
+    Button m_subsystemView = new Button(() -> m_driveController.getRawButton(8));
     m_subsystemView.whenPressed(() -> m_cameraServer.setSource(m_subsystemCamera));
 
     // Operator left trigger opens claw
