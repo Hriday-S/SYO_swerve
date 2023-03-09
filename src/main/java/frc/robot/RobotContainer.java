@@ -89,6 +89,7 @@ public class RobotContainer {
 
   public void reset() {
     m_elevatorSubsystem.resetEncoders();
+    m_winchSubsystem.resetEncoders();
     m_drivetrainSubsystem.zeroGyroscope();
     m_drivetrainSubsystem.updateDistance();
   }

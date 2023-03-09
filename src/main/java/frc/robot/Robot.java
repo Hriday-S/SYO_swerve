@@ -63,6 +63,7 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     CommandScheduler.getInstance().cancelAll();
     
+    m_container.reset();
     m_container.setIdleMode(1);
   }
 

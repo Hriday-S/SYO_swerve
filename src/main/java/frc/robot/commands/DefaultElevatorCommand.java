@@ -27,7 +27,6 @@ public class DefaultElevatorCommand extends CommandBase {
     public void execute() {
         m_elevatorSubsystem.extend(m_elevatorPulleySpeed.getAsDouble());
         m_winchSubsystem.rotate(m_winchSpeed.getAsDouble());
-        SmartDashboard.putNumber("Winch Position", m_winchSubsystem.getWinchAbsPosition());
     }
 
     @Override
