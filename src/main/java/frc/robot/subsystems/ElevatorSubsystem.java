@@ -47,12 +47,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (m_topSwitch.get() && m_elevatorPulleySpeed > 0) {
+        if (!m_topSwitch.get() && m_elevatorPulleySpeed > 0) {
             this.getCurrentCommand().cancel();
             m_elevatorPulley.set(0);
             
         }
-        else if (m_bottomSwitch.get() && m_elevatorPulleySpeed < 0) {
+        else if (!m_bottomSwitch.get() && m_elevatorPulleySpeed < 0) {
             this.getCurrentCommand().cancel();
             m_elevatorPulley.set(0);
         }
