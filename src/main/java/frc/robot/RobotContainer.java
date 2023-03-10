@@ -125,8 +125,8 @@ public class RobotContainer {
     Button m_resetGyro = new Button(() -> m_driveController.getRawButton(3));
     m_resetGyro.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
 
-    // Operator back button zeroes subsystems
-    Button m_resetElevator = new Button(() -> m_operatorController.getRawButton(7));
+    // Operator back and start buttons zeroes subsystems
+    Button m_resetElevator = new Button(() -> m_operatorController.getRawButton(7) && m_operatorController.getRawButton(8));
     m_resetElevator.whenPressed(() -> reset(0));
 
     // Driver holding down driver trigger activates turbo speed

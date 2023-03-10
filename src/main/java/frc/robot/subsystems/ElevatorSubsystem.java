@@ -33,18 +33,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void extend(double elevatorPulleySpeed) {
-        if (m_topSwitch.get() && elevatorPulleySpeed > 0) {
-            this.getCurrentCommand().cancel();
-            m_elevatorPulleySpeed = -0.1;
-            
-        }
-        else if (m_bottomSwitch.get() && elevatorPulleySpeed < 0) {
-            this.getCurrentCommand().cancel();
-            m_elevatorPulleySpeed = 0.1;
-        }
-        else {
-            m_elevatorPulleySpeed = elevatorPulleySpeed;
-        }
+        m_elevatorPulleySpeed = elevatorPulleySpeed;
     }
 
     public double getElevatorAbsPosition() {
@@ -58,6 +47,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_elevatorPulley.set(m_elevatorPulleySpeed);
+        if (m_topSwitch.get() && m_elevatorPulleySpeed > 0) {
+            this.getCurrentCommand().cancel();
+            m_elevatorPulley.set(-0.1);
+            
+        }
+        else if (m_bottomSwitch.get() && m_elevatorPulleySpeed < 0) {
+            this.getCurrentCommand().cancel();
+            m_elevatorPulley.set(0.1);
+        }
+        else {
+            m_elevatorPulley.set(m_elevatorPulleySpeed);
+        }
     }
 }

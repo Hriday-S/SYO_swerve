@@ -32,17 +32,7 @@ public class WinchSubsystem extends SubsystemBase {
     }
 
     public void rotate(double winchSpeed) {
-        if (m_topSwitch.get() && winchSpeed < 0) {
-            this.getCurrentCommand().cancel();
-            m_winchSpeed = 0.1;
-        }
-        else if (m_bottomSwitch.get() && winchSpeed > 0) {
-            this.getCurrentCommand().cancel();
-            m_winchSpeed = -0.1;
-        }
-        else {
-            m_winchSpeed = winchSpeed;
-        }
+        m_winchSpeed = winchSpeed;
     }
 
     public double getWinchAbsPosition() {
@@ -56,7 +46,17 @@ public class WinchSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_winch.set(m_winchSpeed);
+        if (m_topSwitch.get() && m_winchSpeed < 0) {
+            this.getCurrentCommand().cancel();
+            m_winch.set(0.1);
+        }
+        else if (m_bottomSwitch.get() && m_winchSpeed > 0) {
+            this.getCurrentCommand().cancel();
+            m_winch.set(-0.1);
+        }
+        else {
+            m_winch.set(m_winchSpeed);
+        }
     }
 
     /*
