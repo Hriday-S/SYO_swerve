@@ -109,7 +109,7 @@ public class RobotContainer {
             new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.2)
         ),
         new TranslationDriveCommand(m_drivetrainSubsystem, -1, 0, 0.5),
-        new RotationDriveCommand(m_drivetrainSubsystem, 180, Math.PI / 2),
+        new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI / 2),
         new TranslationDriveCommand(m_drivetrainSubsystem, -2, 0, 0.5)
     );
   }
@@ -125,8 +125,8 @@ public class RobotContainer {
     Button m_resetGyro = new Button(() -> m_driveController.getRawButton(3));
     m_resetGyro.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
 
-    // Driver bottom-right thumbpad button zeroes subsystems
-    Button m_resetElevator = new Button(() -> m_driveController.getRawButton(4));
+    // Operator start button zeroes subsystems
+    Button m_resetElevator = new Button(() -> m_operatorController.getRawButton(7));
     m_resetElevator.whenPressed(() -> reset(0));
 
     // Driver holding down driver trigger activates turbo speed
