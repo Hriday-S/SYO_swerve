@@ -27,7 +27,7 @@ public class WinchPositionCommand extends CommandBase {
     @Override
     public void initialize() {
         m_startAngle = m_winchSubsystem.getWinchAbsPosition();
-        m_winchSubsystem.rotate(Math.copySign(m_power, -(m_targetAngle - m_startAngle)));
+        m_winchSubsystem.rotate(Math.copySign(m_power, (m_targetAngle - m_startAngle)));
     }
 
     @Override
