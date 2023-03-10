@@ -54,8 +54,8 @@ public final class Constants {
 
     public static final int WINCH_MOTOR = 61;
     public static final int WINCH_ENCODER = 0;
-    public static final int WINCH_SWITCH_TOP = 3; // FIXME Set to correct DIO ports
-    public static final int WINCH_SWITCH_BOTTOM = 4; // FIXME Set to correct DIO ports
+    public static final int WINCH_SWITCH_TOP = 3;
+    public static final int WINCH_SWITCH_BOTTOM = 4;
 
     public static final int INTAKE_MOTOR_1 = 40;
     public static final int INTAKE_MOTOR_2 = 41;
