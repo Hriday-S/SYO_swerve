@@ -47,7 +47,7 @@ public class WinchSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (!m_topSwitch.get() && m_winchSpeed > 0) {
-            this.getCurrentCommand().cancel();
+            //this.getCurrentCommand().cancel();
             m_winch.set(0);
         }
         else if (!m_bottomSwitch.get() && m_winchSpeed < 0) {
