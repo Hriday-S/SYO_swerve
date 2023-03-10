@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -16,16 +17,32 @@ public class WinchSubsystem extends SubsystemBase {
 
     private DutyCycleEncoder m_winchEncoder;
 
+    DigitalInput m_topSwitch;
+    DigitalInput m_bottomSwitch;
+
     public WinchSubsystem() {
         m_winch = new CANSparkMax(WINCH_MOTOR, MotorType.kBrushless);
         m_winch.setIdleMode(IdleMode.kBrake);
 
         m_winchEncoder = new DutyCycleEncoder(Constants.WINCH_ENCODER);
         m_winchEncoder.setDistancePerRotation(-360); // Convert from encoder rotations to degrees
+
+        m_topSwitch = new DigitalInput(Constants.WINCH_SWITCH_TOP);
+        m_bottomSwitch = new DigitalInput(Constants.WINCH_SWITCH_BOTTOM);
     }
 
     public void rotate(double winchSpeed) {
-        m_winchSpeed = winchSpeed;
+        if (m_topSwitch.get() && winchSpeed < 0) {
+            this.getCurrentCommand().cancel();
+            m_winchSpeed = 0.1;
+        }
+        else if (m_bottomSwitch.get() && winchSpeed > 0) {
+            this.getCurrentCommand().cancel();
+            m_winchSpeed = -0.1;
+        }
+        else {
+            m_winchSpeed = winchSpeed;
+        }
     }
 
     public double getWinchAbsPosition() {

@@ -7,13 +7,18 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
     private CANSparkMax m_elevatorPulley;
     private double m_elevatorPulleySpeed = 0;
 
     private RelativeEncoder m_elevatorPulleyEncoder;
+
+    DigitalInput m_topSwitch;
+    DigitalInput m_bottomSwitch;
 
     public ElevatorSubsystem() {
         m_elevatorPulley = new CANSparkMax(ELEVATOR_PULLEY_MOTOR, MotorType.kBrushless);
@@ -22,10 +27,24 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         m_elevatorPulleyEncoder = m_elevatorPulley.getEncoder();
         m_elevatorPulleyEncoder.setPositionConversionFactor(0.01); // Convert to meters
+
+        m_topSwitch = new DigitalInput(Constants.ELEVATOR_SWITCH_TOP);
+        m_bottomSwitch = new DigitalInput(Constants.ELEVATOR_SWITCH_BOTTOM);
     }
 
     public void extend(double elevatorPulleySpeed) {
-        m_elevatorPulleySpeed = elevatorPulleySpeed;
+        if (m_topSwitch.get() && elevatorPulleySpeed > 0) {
+            this.getCurrentCommand().cancel();
+            m_elevatorPulleySpeed = -0.1;
+            
+        }
+        else if (m_bottomSwitch.get() && elevatorPulleySpeed < 0) {
+            this.getCurrentCommand().cancel();
+            m_elevatorPulleySpeed = 0.1;
+        }
+        else {
+            m_elevatorPulleySpeed = elevatorPulleySpeed;
+        }
     }
 
     public double getElevatorAbsPosition() {
