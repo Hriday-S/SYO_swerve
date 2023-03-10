@@ -175,12 +175,12 @@ public class RobotContainer {
     Button m_closeClaw = new Button(() -> m_operatorController.getRawAxis(3) > 0.5);
     m_closeClaw.whenPressed(new CloseIntakeCommand(m_intakeSubsystem));
 
-    // Driver bottom-close-left base button changes camera view
+    // Driver button 11 rotates left
     Button m_rotateLeft = new Button(() -> m_driveController.getRawButton(11));
     m_rotateLeft.whileHeld(() -> setRotatePower("left"));
     m_rotateLeft.whenReleased(() -> setRotatePower("none"));
 
-    // Driver bottom-close-right base button changes camera view
+    // Driver button 12 rotates robot right
     Button m_rotateRight = new Button(() -> m_driveController.getRawButton(12));
     m_rotateRight.whileHeld(() -> setRotatePower("right"));
     m_rotateRight.whenReleased(() -> setRotatePower("none"));
