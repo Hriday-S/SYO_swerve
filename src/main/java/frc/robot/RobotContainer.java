@@ -145,19 +145,19 @@ public class RobotContainer {
 
     // Operator 'A' button sets elevator to low position
     Button m_lowPosition = new Button(() -> m_operatorController.getRawButton(1));
-    m_lowPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.4), new WinchPositionCommand(m_winchSubsystem, "IN", 0.4)));
+    m_lowPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.6), new WinchPositionCommand(m_winchSubsystem, "IN", 0.6)));
 
     // Operator 'X' button sets elevator to mid position
     Button m_midPosition = new Button(() -> m_operatorController.getRawButton(3));
-    m_midPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "MID", 0.4), new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)));
+    m_midPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "MID", 0.6), new WinchPositionCommand(m_winchSubsystem, "OUT", 0.6)));
 
     // Operator 'Y' button sets elevator to high position
     Button m_highPosition = new Button(() -> m_operatorController.getRawButton(4));
-    m_highPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.4), new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)));
+    m_highPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.6), new WinchPositionCommand(m_winchSubsystem, "OUT", 0.6)));
 
     // Operator 'B' button sets winch to drive position
     Button m_drivePosition = new Button(() -> m_operatorController.getRawButton(2));
-    m_drivePosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.4), new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.4)));
+    m_drivePosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.6), new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.6)));
 
     // Driver bottom-far-left base button changes camera view
     Button m_driveView = new Button(() -> m_driveController.getRawButton(7));
