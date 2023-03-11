@@ -97,8 +97,12 @@ public class RobotContainer {
   }
 
   public void cancelElevatorCommands() {
-    m_elevatorSubsystem.getCurrentCommand().cancel();
-    m_winchSubsystem.getCurrentCommand().cancel();
+    if (m_elevatorSubsystem.getCurrentCommand() != null) {
+      m_elevatorSubsystem.getCurrentCommand().cancel();
+    }
+    if (m_winchSubsystem.getCurrentCommand() != null) {
+      m_winchSubsystem.getCurrentCommand().cancel();
+    }
   }
 
   public SequentialCommandGroup autonomousCommands() {
