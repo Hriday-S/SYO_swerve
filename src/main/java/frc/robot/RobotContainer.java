@@ -96,17 +96,22 @@ public class RobotContainer {
     }
   }
 
+  public void cancelElevatorCommands() {
+    m_elevatorSubsystem.getCurrentCommand().cancel();
+    m_winchSubsystem.getCurrentCommand().cancel();
+  }
+
   public SequentialCommandGroup autonomousCommands() {
     return new SequentialCommandGroup(
         new CloseIntakeCommand(m_intakeSubsystem),
         new ParallelCommandGroup(
-            new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.4),
-            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.2)
+            new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7),
+            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.7)
         ),
         new OpenIntakeCommand(m_intakeSubsystem),
         new ParallelCommandGroup(
-            new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.4),
-            new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.2)
+            new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.7),
+            new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.7)
         ),
         new TranslationDriveCommand(m_drivetrainSubsystem, -1, 0, 0.5),
         new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI / 2),
@@ -129,6 +134,10 @@ public class RobotContainer {
     Button m_resetElevator = new Button(() -> m_operatorController.getRawButton(7) && m_operatorController.getRawButton(8));
     m_resetElevator.whenPressed(() -> reset(0));
 
+    // Operator start button cancels presets
+    Button m_cancelPresets = new Button(() -> m_operatorController.getRawButton(8));
+    m_cancelPresets.whenPressed(() -> cancelElevatorCommands());
+
     // Driver holding down driver trigger activates turbo speed
     Button m_turbo = new Button(() -> m_driveController.getRawButton(1));
     m_turbo.whenPressed(() -> setTurbo(1.0));
@@ -145,19 +154,19 @@ public class RobotContainer {
 
     // Operator 'A' button sets elevator to low position
     Button m_lowPosition = new Button(() -> m_operatorController.getRawButton(1));
-    m_lowPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.6), new WinchPositionCommand(m_winchSubsystem, "IN", 0.6)));
+    m_lowPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.8), new WinchPositionCommand(m_winchSubsystem, "IN", 0.8)));
 
     // Operator 'X' button sets elevator to mid position
     Button m_midPosition = new Button(() -> m_operatorController.getRawButton(3));
-    m_midPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "MID", 0.6), new WinchPositionCommand(m_winchSubsystem, "OUT", 0.6)));
+    m_midPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "MID", 0.8), new WinchPositionCommand(m_winchSubsystem, "OUT", 0.8)));
 
     // Operator 'Y' button sets elevator to high position
     Button m_highPosition = new Button(() -> m_operatorController.getRawButton(4));
-    m_highPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.6), new WinchPositionCommand(m_winchSubsystem, "OUT", 0.6)));
+    m_highPosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.8), new WinchPositionCommand(m_winchSubsystem, "OUT", 0.8)));
 
     // Operator 'B' button sets winch to drive position
     Button m_drivePosition = new Button(() -> m_operatorController.getRawButton(2));
-    m_drivePosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.6), new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.6)));
+    m_drivePosition.whenPressed(new ParallelCommandGroup(new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.8), new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.8)));
 
     // Driver bottom-far-left base button changes camera view
     Button m_driveView = new Button(() -> m_driveController.getRawButton(7));
