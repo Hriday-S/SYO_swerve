@@ -96,6 +96,11 @@ public class RobotContainer {
     }
   }
 
+  public void cancelElevatorCommands() {
+    m_elevatorSubsystem.getCurrentCommand().cancel();
+    m_winchSubsystem.getCurrentCommand().cancel();
+  }
+
   public SequentialCommandGroup autonomousCommands() {
     return new SequentialCommandGroup(
         new CloseIntakeCommand(m_intakeSubsystem),
@@ -128,6 +133,10 @@ public class RobotContainer {
     // Operator back and start buttons zeroes subsystems
     Button m_resetElevator = new Button(() -> m_operatorController.getRawButton(7) && m_operatorController.getRawButton(8));
     m_resetElevator.whenPressed(() -> reset(0));
+
+    // Operator start button cancels presets
+    Button m_cancelPresets = new Button(() -> m_operatorController.getRawButton(8));
+    m_cancelPresets.whenPressed(() -> cancelElevatorCommands());
 
     // Driver holding down driver trigger activates turbo speed
     Button m_turbo = new Button(() -> m_driveController.getRawButton(1));
