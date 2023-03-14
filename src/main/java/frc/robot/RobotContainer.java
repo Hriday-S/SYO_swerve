@@ -106,9 +106,14 @@ public class RobotContainer {
   }
 
   public SequentialCommandGroup autonomousCommands(String alliance) {
+    /*
+    return new SequentialCommandGroup(
+        new OpenIntakeCommand(m_intakeSubsystem),
+        new CloseIntakeCommand(m_intakeSubsystem)
+    );
+    */
     if (alliance.equals("blue")) {
       return new SequentialCommandGroup(
-        new CloseIntakeCommand(m_intakeSubsystem),
         new ParallelCommandGroup(
             new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7),
             new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)
@@ -126,7 +131,6 @@ public class RobotContainer {
     }
     if (alliance.equals("red")) {
       return new SequentialCommandGroup(
-        new CloseIntakeCommand(m_intakeSubsystem),
         new ParallelCommandGroup(
             new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7),
             new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)
