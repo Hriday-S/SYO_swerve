@@ -111,7 +111,7 @@ public class RobotContainer {
         new CloseIntakeCommand(m_intakeSubsystem),
         new ParallelCommandGroup(
             new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7),
-            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.7)
+            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)
         ),
         new OpenIntakeCommand(m_intakeSubsystem),
         new ParallelCommandGroup(
@@ -129,7 +129,7 @@ public class RobotContainer {
         new CloseIntakeCommand(m_intakeSubsystem),
         new ParallelCommandGroup(
             new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7),
-            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.7)
+            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)
         ),
         new OpenIntakeCommand(m_intakeSubsystem),
         new ParallelCommandGroup(
