@@ -105,8 +105,9 @@ public class RobotContainer {
     }
   }
 
-  public SequentialCommandGroup autonomousCommands() {
-    return new SequentialCommandGroup(
+  public SequentialCommandGroup autonomousCommands(String alliance) {
+    if (alliance.equals("blue")) {
+      return new SequentialCommandGroup(
         new CloseIntakeCommand(m_intakeSubsystem),
         new ParallelCommandGroup(
             new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7),
@@ -117,10 +118,31 @@ public class RobotContainer {
             new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.7),
             new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.7)
         ),
-        new TranslationDriveCommand(m_drivetrainSubsystem, -1, 0, 0.5),
+        new TranslationDriveCommand(m_drivetrainSubsystem, -3.73, 0, 1),
         new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI / 2),
-        new TranslationDriveCommand(m_drivetrainSubsystem, -2, 0, 0.5)
-    );
+        new TranslationDriveCommand(m_drivetrainSubsystem, 0, -1.68, 1),
+        new TranslationDriveCommand(m_drivetrainSubsystem, 1.54, 0, 1)
+      );
+    }
+    if (alliance.equals("red")) {
+      return new SequentialCommandGroup(
+        new CloseIntakeCommand(m_intakeSubsystem),
+        new ParallelCommandGroup(
+            new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7),
+            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.7)
+        ),
+        new OpenIntakeCommand(m_intakeSubsystem),
+        new ParallelCommandGroup(
+            new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.7),
+            new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.7)
+        ),
+        new TranslationDriveCommand(m_drivetrainSubsystem, -3.73, 0, 1),
+        new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI / 2),
+        new TranslationDriveCommand(m_drivetrainSubsystem, 0, 1.68, 1),
+        new TranslationDriveCommand(m_drivetrainSubsystem, 1.54, 0, 1)
+      );
+    }
+    return new SequentialCommandGroup(new IdleDriveCommand(m_drivetrainSubsystem));
   }
 
   /**
