@@ -72,8 +72,8 @@ public class RobotContainer {
     m_elevatorSubsystem.setDefaultCommand(new DefaultElevatorCommand(
         m_elevatorSubsystem,
         m_winchSubsystem, 
-        () -> -deadband(m_operatorController.getRawAxis(1), 0.05), 
-        () -> -deadband(m_operatorController.getRawAxis(5), 0.05)
+        () -> -deadband(m_operatorController.getRawAxis(5), 0.05), 
+        () -> -deadband(m_operatorController.getRawAxis(1), 0.05)
     ));
 
     m_driveCamera = CameraServer.startAutomaticCapture(0);
@@ -118,14 +118,20 @@ public class RobotContainer {
             new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7),
             new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)
         ),
-        new OpenIntakeCommand(m_intakeSubsystem),
+        new ParallelCommandGroup(
+            new OpenIntakeCommand(m_intakeSubsystem),
+            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)
+        ),
         new ParallelCommandGroup(
             new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.7),
             new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.7)
         ),
         new TranslationDriveCommand(m_drivetrainSubsystem, -3.73, 0, 1),
+        new IdleDriveCommand(m_drivetrainSubsystem, 300),
         new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI / 2),
+        new IdleDriveCommand(m_drivetrainSubsystem, 300),
         new TranslationDriveCommand(m_drivetrainSubsystem, 0, -1.68, 1),
+        new IdleDriveCommand(m_drivetrainSubsystem, 300),
         new TranslationDriveCommand(m_drivetrainSubsystem, 1.54, 0, 1)
       );
     }
@@ -135,14 +141,20 @@ public class RobotContainer {
             new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7),
             new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)
         ),
-        new OpenIntakeCommand(m_intakeSubsystem),
+        new ParallelCommandGroup(
+            new OpenIntakeCommand(m_intakeSubsystem),
+            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)
+        ),
         new ParallelCommandGroup(
             new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.7),
             new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.7)
         ),
         new TranslationDriveCommand(m_drivetrainSubsystem, -3.73, 0, 1),
+        new IdleDriveCommand(m_drivetrainSubsystem, 300),
         new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI / 2),
+        new IdleDriveCommand(m_drivetrainSubsystem, 300),
         new TranslationDriveCommand(m_drivetrainSubsystem, 0, 1.68, 1),
+        new IdleDriveCommand(m_drivetrainSubsystem, 300),
         new TranslationDriveCommand(m_drivetrainSubsystem, 1.54, 0, 1)
       );
     }
@@ -156,8 +168,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Driver bottom-left thumbpad button zeroes gyroscope
-    Button m_resetGyro = new Button(() -> m_driveController.getRawButton(3));
+    // Driver top-right thumbpad button zeroes gyroscope
+    Button m_resetGyro = new Button(() -> m_driveController.getRawButton(6));
     m_resetGyro.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
 
     // Operator back and start buttons zeroes subsystems
@@ -174,7 +186,7 @@ public class RobotContainer {
     m_turbo.whenReleased(() -> setTurbo(0.5));
 
     // Driver holding down side thumb button activates hard brakes
-    Button m_brake = new Button(() -> m_driveController.getRawButton(2));
+    Button m_brake = new Button(() -> m_driveController.getRawButton(10));
     m_brake.whenPressed(() -> setIdleMode(0));
     m_brake.whenReleased(() -> setIdleMode(1));
 
