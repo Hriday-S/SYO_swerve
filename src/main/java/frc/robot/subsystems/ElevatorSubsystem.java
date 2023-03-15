@@ -26,7 +26,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         m_elevatorPulley.setInverted(true);
 
         m_elevatorPulleyEncoder = m_elevatorPulley.getEncoder();
-        m_elevatorPulleyEncoder.setPositionConversionFactor(0.01); // Convert to meters
+        m_elevatorPulleyEncoder.setPositionConversionFactor(0.009); // Convert to meters
 
         m_topSwitch = new DigitalInput(Constants.ELEVATOR_SWITCH_TOP);
         m_bottomSwitch = new DigitalInput(Constants.ELEVATOR_SWITCH_BOTTOM);

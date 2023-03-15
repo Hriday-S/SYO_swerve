@@ -48,7 +48,7 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 52; 
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(34.3+180); 
 
-    public static final int ELEVATOR_PULLEY_MOTOR = 60; 
+    public static final int ELEVATOR_PULLEY_MOTOR = 22; 
     public static final int ELEVATOR_SWITCH_TOP = 1;
     public static final int ELEVATOR_SWITCH_BOTTOM = 2;
 
