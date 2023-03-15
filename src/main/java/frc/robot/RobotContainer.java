@@ -133,6 +133,7 @@ public class RobotContainer {
         new TranslationDriveCommand(m_drivetrainSubsystem, 0, -1.68, 1),
         new IdleDriveCommand(m_drivetrainSubsystem, 300),
         new TranslationDriveCommand(m_drivetrainSubsystem, 1.54, 0, 1)
+        
       );
     }
     if (alliance.equals("red")) {
