@@ -73,8 +73,8 @@ public class RobotContainer {
     m_elevatorSubsystem.setDefaultCommand(new DefaultElevatorCommand(
         m_elevatorSubsystem,
         m_winchSubsystem, 
-        () -> -deadband(m_operatorController.getRawAxis(1), 0.05), 
-        () -> -deadband(m_operatorController.getRawAxis(5), 0.05)
+        () -> -deadband(m_operatorController.getRawAxis(5), 0.05), 
+        () -> -deadband(m_operatorController.getRawAxis(1), 0.05)
     ));
 
     m_driveCamera = CameraServer.startAutomaticCapture(0);
@@ -136,7 +136,7 @@ public class RobotContainer {
       return new SequentialCommandGroup(
         new ParallelCommandGroup(
             new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7),
-            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)
+            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.3)
         ),
         new ParallelCommandGroup(
             new IdleWinchCommand(m_winchSubsystem, 1000),
@@ -166,8 +166,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Driver bottom-left thumbpad button zeroes gyroscope
-    Button m_resetGyro = new Button(() -> m_driveController.getRawButton(3));
+    // Driver top-right thumbpad button zeroes gyroscope
+    Button m_resetGyro = new Button(() -> m_driveController.getRawButton(6));
     m_resetGyro.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
 
     // Operator back and start buttons zeroes subsystems
@@ -184,7 +184,7 @@ public class RobotContainer {
     m_turbo.whenReleased(() -> setTurbo(0.5));
 
     // Driver holding down side thumb button activates hard brakes
-    Button m_brake = new Button(() -> m_driveController.getRawButton(2));
+    Button m_brake = new Button(() -> m_driveController.getRawButton(10));
     m_brake.whenPressed(() -> setIdleMode(0));
     m_brake.whenReleased(() -> setIdleMode(1));
 
