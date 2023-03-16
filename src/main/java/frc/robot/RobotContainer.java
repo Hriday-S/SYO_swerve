@@ -106,36 +106,44 @@ public class RobotContainer {
   }
 
   public SequentialCommandGroup autonomousCommands(String alliance) {
-    /*
-    return new SequentialCommandGroup(
-        new OpenIntakeCommand(m_intakeSubsystem),
-        new CloseIntakeCommand(m_intakeSubsystem)
-    );
-    */
     if (alliance.equals("blue")) {
       return new SequentialCommandGroup(
         new ParallelCommandGroup(
             new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7),
-            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)
+            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.35)
         ),
         new ParallelCommandGroup(
             new OpenIntakeCommand(m_intakeSubsystem),
-            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)
+            new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7)
         ),
         new ParallelCommandGroup(
             new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.7),
             new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.7)
         ),
-        new TranslationDriveCommand(m_drivetrainSubsystem, -3.73, 0, 1),
+        //new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI / 2),
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        // new TranslationDriveCommand(m_drivetrainSubsystem, 0, 1.55, 1),
         new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI / 2),
-        new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new TranslationDriveCommand(m_drivetrainSubsystem, 0, -1.68, 1),
-        new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new TranslationDriveCommand(m_drivetrainSubsystem, 1.54, 0, 1)
+        // new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI/2),
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        new TranslationDriveCommand(m_drivetrainSubsystem, -3.5, 0, 1),
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
         
+        new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        new TranslationDriveCommand(m_drivetrainSubsystem, 0, -1.75, 1),
+        new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        // new TranslationDriveCommand(m_drivetrainSubsystem, 0, -1.42, 1)
+        new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI/2),
+        new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        new TranslationDriveCommand(m_drivetrainSubsystem, 2.03, 0, 0.4)
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        // new RotationDriveCommand(m_drivetrainSubsystem, -90, Math.PI/2),
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        // new TranslationDriveCommand(m_drivetrainSubsystem, 1.7, 0, 0.3)
+
       );
     }
+    /*
     if (alliance.equals("red")) {
       return new SequentialCommandGroup(
         new ParallelCommandGroup(
@@ -159,6 +167,7 @@ public class RobotContainer {
         new TranslationDriveCommand(m_drivetrainSubsystem, 1.54, 0, 1)
       );
     }
+    */
     return new SequentialCommandGroup(new IdleDriveCommand(m_drivetrainSubsystem));
   }
 
