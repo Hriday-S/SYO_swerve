@@ -16,7 +16,9 @@ import frc.robot.commands.TranslationDriveCommand;
 import frc.robot.commands.WinchPositionCommand;
 import frc.robot.commands.RotationDriveCommand;
 import frc.robot.commands.IdleDriveCommand;
+import frc.robot.commands.IdleWinchCommand;
 import frc.robot.commands.OpenIntakeCommand;
+import frc.robot.commands.ReleaseSuctionCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.ElevatorPositionCommand;
@@ -106,68 +108,129 @@ public class RobotContainer {
   }
 
   public SequentialCommandGroup autonomousCommands(String alliance) {
-    if (alliance.equals("blue")) {
+    if (alliance.equals("right")) {
       return new SequentialCommandGroup(
         new ParallelCommandGroup(
-            new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7),
-            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.35)
+            new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.8),
+            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.6)
         ),
         new ParallelCommandGroup(
             new OpenIntakeCommand(m_intakeSubsystem),
-            new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7)
+            new IdleWinchCommand(m_winchSubsystem, 300)
+            
         ),
+        new WinchPositionCommand(m_winchSubsystem, "OUT", 0.6),
         new ParallelCommandGroup(
-            new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.7),
+            new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.8),
             new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.7)
         ),
         //new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI / 2),
         // new IdleDriveCommand(m_drivetrainSubsystem, 300),
         // new TranslationDriveCommand(m_drivetrainSubsystem, 0, 1.55, 1),
-        new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
         // new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI/2),
         // new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new TranslationDriveCommand(m_drivetrainSubsystem, -3.5, 0, 1),
+        new TranslationDriveCommand(m_drivetrainSubsystem, -3.5, 0, 1.3),
         // new IdleDriveCommand(m_drivetrainSubsystem, 300),
         
-        new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new TranslationDriveCommand(m_drivetrainSubsystem, 0, -1.75, 1),
-        new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        new IdleDriveCommand(m_drivetrainSubsystem, 100),
+        new TranslationDriveCommand(m_drivetrainSubsystem, 0, -1.22, 1.3),
+        new IdleDriveCommand(m_drivetrainSubsystem, 100),
         // new TranslationDriveCommand(m_drivetrainSubsystem, 0, -1.42, 1)
-        new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI/2),
-        new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new TranslationDriveCommand(m_drivetrainSubsystem, 2.03, 0, 0.4)
+        new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI/1),
+        new IdleDriveCommand(m_drivetrainSubsystem, 100),
+        new TranslationDriveCommand(m_drivetrainSubsystem, 2.15, 0, 0.6)
         // new IdleDriveCommand(m_drivetrainSubsystem, 300),
         // new RotationDriveCommand(m_drivetrainSubsystem, -90, Math.PI/2),
         // new IdleDriveCommand(m_drivetrainSubsystem, 300),
         // new TranslationDriveCommand(m_drivetrainSubsystem, 1.7, 0, 0.3)
 
       );
+
     }
-    /*
-    if (alliance.equals("red")) {
+    
+    if (alliance.equals("left")) {
       return new SequentialCommandGroup(
         new ParallelCommandGroup(
-            new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.7),
-            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)
+            new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.8),
+            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.6)
         ),
         new ParallelCommandGroup(
             new OpenIntakeCommand(m_intakeSubsystem),
-            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.4)
+            new IdleWinchCommand(m_winchSubsystem, 300)
+            
         ),
+        new WinchPositionCommand(m_winchSubsystem, "OUT", 0.6),
         new ParallelCommandGroup(
-            new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.7),
+            new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.8),
             new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.7)
         ),
-        new TranslationDriveCommand(m_drivetrainSubsystem, -3.73, 0, 1),
-        new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI / 2),
-        new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new TranslationDriveCommand(m_drivetrainSubsystem, 0, 1.68, 1),
-        new IdleDriveCommand(m_drivetrainSubsystem, 300),
-        new TranslationDriveCommand(m_drivetrainSubsystem, 1.54, 0, 1)
+        //new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI / 2),
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        // new TranslationDriveCommand(m_drivetrainSubsystem, 0, 1.55, 1),
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        // new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI/2),
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        new TranslationDriveCommand(m_drivetrainSubsystem, -3.5, 0, 1.3),
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        
+        new IdleDriveCommand(m_drivetrainSubsystem, 100),
+        new TranslationDriveCommand(m_drivetrainSubsystem, 0, 1.22, 1.3),
+        new IdleDriveCommand(m_drivetrainSubsystem, 100),
+        // new TranslationDriveCommand(m_drivetrainSubsystem, 0, -1.42, 1)
+        new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI/1),
+        new IdleDriveCommand(m_drivetrainSubsystem, 100),
+        new TranslationDriveCommand(m_drivetrainSubsystem, 2.15, 0, 0.6)
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        // new RotationDriveCommand(m_drivetrainSubsystem, -90, Math.PI/2),
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        // new TranslationDriveCommand(m_drivetrainSubsystem, 1.7, 0, 0.3)
+
       );
+
+      
     }
-    */
+    
+    if (alliance.equals("mid")) {
+      return new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            new ElevatorPositionCommand(m_elevatorSubsystem, "HIGH", 0.8),
+            new WinchPositionCommand(m_winchSubsystem, "OUT", 0.6)
+        ),
+        new ParallelCommandGroup(
+            new OpenIntakeCommand(m_intakeSubsystem),
+            new IdleWinchCommand(m_winchSubsystem, 300)
+            
+        ),
+        new WinchPositionCommand(m_winchSubsystem, "OUT", 0.6),
+        new ParallelCommandGroup(
+            new ElevatorPositionCommand(m_elevatorSubsystem, "LOW", 0.8),
+            new WinchPositionCommand(m_winchSubsystem, "DRIVE", 0.7)
+        ),
+        //new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI / 2),
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        // new TranslationDriveCommand(m_drivetrainSubsystem, 0, 1.55, 1),
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        // new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI/2),
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        new RotationDriveCommand(m_drivetrainSubsystem, 90, Math.PI * 0.5),
+        new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        new TranslationDriveCommand(m_drivetrainSubsystem, -2.4, 0, 1.3)
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        
+        
+        // new TranslationDriveCommand(m_drivetrainSubsystem, 0, -1.42, 1)
+        
+        
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        // new RotationDriveCommand(m_drivetrainSubsystem, -90, Math.PI/2),
+        // new IdleDriveCommand(m_drivetrainSubsystem, 300),
+        // new TranslationDriveCommand(m_drivetrainSubsystem, 1.7, 0, 0.3)
+
+      );
+
+      
+    }
     return new SequentialCommandGroup(new IdleDriveCommand(m_drivetrainSubsystem));
   }
 
@@ -178,6 +241,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    // Operator start button cancels presets
+    Button m_cancelPresets = new Button(() -> m_operatorController.getRawButton(8));
+    m_cancelPresets.whenPressed(() -> cancelElevatorCommands());
+    
     // Driver top-right thumbpad button zeroes gyroscope
     Button m_resetGyro = new Button(() -> m_driveController.getRawButton(6));
     m_resetGyro.whenPressed(m_drivetrainSubsystem::zeroGyroscope);
@@ -187,8 +254,8 @@ public class RobotContainer {
     m_resetElevator.whenPressed(() -> reset(0));
 
     // Operator start button cancels presets
-    Button m_cancelPresets = new Button(() -> m_operatorController.getRawButton(8));
-    m_cancelPresets.whenPressed(() -> cancelElevatorCommands());
+    Button m_releaseSuction = new Button(() -> m_operatorController.getRawButton(6));
+    m_releaseSuction.whenPressed(new ReleaseSuctionCommand(m_intakeSubsystem));
 
     // Driver holding down driver trigger activates turbo speed
     Button m_turbo = new Button(() -> m_driveController.getRawButton(1));

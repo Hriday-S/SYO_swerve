@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
     m_container.reset(1);
     m_container.setIdleMode(0);
 
-    m_container.autonomousCommands("blue").schedule();
+    m_container.autonomousCommands("right").schedule();
   }
 
   /** This function is called periodically during autonomous. */

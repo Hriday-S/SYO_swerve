@@ -14,10 +14,12 @@ public class ElevatorPositionCommand extends CommandBase {
         m_elevatorSubsystem = elevatorSubsystem;
         if (position.equals("HIGH")) {
             m_targetPosition = 1.10;
-        } else if (position.equals("MID")) {
+        } 
+        else if (position.equals("MID")) {
             m_targetPosition = 0.5;
-        } else if (position.equals("LOW")) {
-            m_targetPosition = 0;
+        } 
+        else if (position.equals("LOW")) {
+            m_targetPosition = 0.15;
         }
         m_power = power;
 
